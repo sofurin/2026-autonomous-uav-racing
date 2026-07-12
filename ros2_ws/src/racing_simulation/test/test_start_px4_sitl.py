@@ -72,6 +72,9 @@ def test_starts_a_project_owned_world_before_px4_standalone(tmp_path: Path) -> N
     assert f"gz sim -r {worlds_dir / 'team_course.sdf'}" in result.stdout
     assert "PX4_GZ_STANDALONE=1" in result.stdout
 
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert 'gz sim "${gz_args[@]}" </dev/null &' in source
+
 
 def test_rejects_a_model_name_that_could_be_interpreted_as_shell_code(
     tmp_path: Path,

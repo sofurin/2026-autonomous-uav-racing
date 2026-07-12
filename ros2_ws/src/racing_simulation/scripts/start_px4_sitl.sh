@@ -175,7 +175,7 @@ if [[ -n "$project_world" ]]; then
   fi
   gz_args+=("$project_world")
 
-  gz sim "${gz_args[@]}" &
+  gz sim "${gz_args[@]}" </dev/null &
   gz_pid=$!
   cleanup() {
     kill -INT "$gz_pid" 2>/dev/null || true
