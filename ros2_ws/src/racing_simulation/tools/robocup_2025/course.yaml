@@ -1,0 +1,175 @@
+name: robocup_2025_baseline
+description: Known-map baseline for the 2025 RoboCup China UAV autonomous flight racing event.
+frame: gazebo_enu
+
+field:
+  size_xy: [10.0, 10.0]
+  min_xy: [-5.0, -5.0]
+  max_xy: [5.0, 5.0]
+  ceiling_z: 4.0
+
+start_zone:
+  center: [-4.0, -3.65]
+  size: [1.2, 1.6]
+
+landing_zone:
+  center: [4.0, 3.65]
+  size: [1.2, 1.6]
+
+flight:
+  cruise_z: 1.6
+  gate_tolerance_m: 0.15
+  orbit_tolerance_rad: 0.35
+  max_time_s: 300.0
+
+gates:
+  obs1_01:
+    center: [-1.70, -3.75, 1.60]
+    yaw_deg: 0.0
+    width: 1.20
+    height: 1.00
+  obs2_02:
+    center: [0.55, -3.55, 1.60]
+    yaw_deg: 12.0
+    width: 1.10
+    height: 1.10
+  obs3_left:
+    center: [2.70, -3.29, 1.60]
+    yaw_deg: 25.0
+    width: 0.80
+    height: 0.90
+  obs3_right:
+    center: [2.20, -2.21, 1.60]
+    yaw_deg: 25.0
+    width: 0.80
+    height: 0.90
+  obs2_04:
+    center: [2.45, -1.25, 1.60]
+    yaw_deg: 5.0
+    width: 1.10
+    height: 1.10
+  obs4_lower:
+    center: [0.35, -1.35, 1.25]
+    yaw_deg: 8.0
+    width: 1.00
+    height: 0.70
+  obs4_upper:
+    center: [0.35, -1.35, 2.35]
+    yaw_deg: 8.0
+    width: 1.00
+    height: 0.70
+  obs2_06:
+    center: [-2.20, -1.55, 1.60]
+    yaw_deg: -12.0
+    width: 1.10
+    height: 1.10
+  obs1_07:
+    center: [-2.70, 2.55, 1.60]
+    yaw_deg: -18.0
+    width: 1.20
+    height: 1.00
+  obs1_09:
+    center: [2.65, 2.85, 1.60]
+    yaw_deg: 0.0
+    width: 1.20
+    height: 1.00
+
+flags:
+  obs5_08:
+    center: [0.00, 2.75, 1.45]
+    radius: 0.90
+    min_z: 1.0
+    max_z: 2.3
+
+scoring:
+  takeoff: 50
+  landing: 50
+  obstacles:
+    - name: obs1_01
+      type: gate
+      gate: obs1_01
+      score: 100
+    - name: obs2_02
+      type: gate
+      gate: obs2_02
+      score: 100
+    - name: obs3_03
+      type: sequence
+      gates: [obs3_left, obs3_right]
+      score: 100
+    - name: obs2_04
+      type: gate
+      gate: obs2_04
+      score: 100
+    - name: obs4_05
+      type: sequence
+      gates: [obs4_lower, obs4_upper, obs4_lower]
+      score: 300
+    - name: obs2_06
+      type: gate
+      gate: obs2_06
+      score: 100
+    - name: obs1_07
+      type: gate
+      gate: obs1_07
+      score: 100
+    - name: obs5_08
+      type: orbit
+      flag: obs5_08
+      score: 100
+    - name: obs1_09
+      type: gate
+      gate: obs1_09
+      score: 100
+
+route:
+  - name: takeoff
+    position: [-4.0, -3.65, 1.60]
+  - name: pass_obs1_01
+    position: [-1.70, -3.75, 1.60]
+  - name: pass_obs2_02
+    position: [0.55, -3.55, 1.60]
+  - name: pass_obs3_left
+    position: [2.70, -3.29, 1.60]
+  - name: pass_obs3_right
+    position: [2.20, -2.21, 1.60]
+  - name: pass_obs2_04
+    position: [2.45, -1.25, 1.60]
+  - name: obs4_lower_approach
+    position: [1.15, -1.24, 1.25]
+  - name: pass_obs4_lower_in
+    position: [0.35, -1.35, 1.25]
+  - name: obs4_lower_depart
+    position: [-0.45, -1.46, 1.25]
+  - name: obs4_upper_approach
+    position: [1.15, -1.24, 2.35]
+  - name: pass_obs4_upper
+    position: [0.35, -1.35, 2.35]
+  - name: obs4_upper_depart
+    position: [-0.45, -1.46, 2.35]
+  - name: obs4_exit_approach
+    position: [1.15, -1.24, 1.25]
+  - name: pass_obs4_lower_out
+    position: [0.35, -1.35, 1.25]
+  - name: obs4_exit_depart
+    position: [-0.45, -1.46, 1.25]
+  - name: pass_obs2_06
+    position: [-2.20, -1.55, 1.60]
+  - name: pass_obs1_07
+    position: [-2.70, 2.55, 1.60]
+  - name: orbit_obs5_north
+    position: [0.00, 3.65, 1.55]
+  - name: orbit_obs5_east
+    position: [0.90, 2.75, 1.55]
+  - name: orbit_obs5_south
+    position: [0.00, 1.85, 1.55]
+  - name: orbit_obs5_west
+    position: [-0.90, 2.75, 1.55]
+  - name: orbit_obs5_complete
+    position: [0.00, 3.65, 1.55]
+  - name: pass_obs1_09
+    position: [2.65, 2.85, 1.60]
+  - name: landing_approach
+    position: [4.0, 3.65, 1.20]
+  - name: landing
+    position: [4.0, 3.65, 0.15]
