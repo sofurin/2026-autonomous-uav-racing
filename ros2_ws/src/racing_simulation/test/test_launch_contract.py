@@ -51,6 +51,7 @@ def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> N
     assert "sensor_msgs/msg/CameraInfo" in source
     assert "sensor_msgs/msg/PointCloud2" in source
     assert "gz.msgs.PointCloudPacked" in source
+    assert 'additional_env={"GZ_IP": "127.0.0.1"}' in source
 
     d435 = (PACKAGE_ROOT / "models" / "realsense_d435" / "model.sdf").read_text(
         encoding="utf-8"

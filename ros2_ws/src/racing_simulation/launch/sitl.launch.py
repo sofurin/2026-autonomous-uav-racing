@@ -81,6 +81,7 @@ def generate_launch_description():
             [infra2_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
         ],
         condition=IfCondition(start_camera_bridge),
+        additional_env={"GZ_IP": "127.0.0.1"},
         output="screen",
     )
 

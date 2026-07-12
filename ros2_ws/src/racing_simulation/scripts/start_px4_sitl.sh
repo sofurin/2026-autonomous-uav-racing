@@ -142,6 +142,7 @@ fi
 export PX4_SIM_MODEL="$model"
 export PX4_GZ_WORLD="$world"
 export PX4_GZ_MODEL_POSE="$pose"
+export GZ_IP="${GZ_IP:-127.0.0.1}"
 if ((headless)); then
   export HEADLESS=1
 else
@@ -154,6 +155,7 @@ if ((dry_run)); then
   printf 'PX4_GZ_WORLD=%s\n' "$PX4_GZ_WORLD"
   printf 'PX4_GZ_MODEL_POSE=%s\n' "$PX4_GZ_MODEL_POSE"
   printf 'GZ_SIM_RESOURCE_PATH=%s\n' "${GZ_SIM_RESOURCE_PATH:-}"
+  printf 'GZ_IP=%s\n' "$GZ_IP"
   if [[ -n "$project_world" ]]; then
     printf 'PROJECT_GZ_WORLD=%s\n' "$project_world"
     if ((headless)); then

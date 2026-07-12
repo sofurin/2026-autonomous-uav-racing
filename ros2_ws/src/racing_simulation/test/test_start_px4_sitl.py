@@ -71,6 +71,7 @@ def test_starts_a_project_owned_world_before_px4_standalone(tmp_path: Path) -> N
     assert str(tmp_path / "PX4-Autopilot" / "Tools/simulation/gz/models") in result.stdout
     assert f"gz sim -r {worlds_dir / 'team_course.sdf'}" in result.stdout
     assert "PX4_GZ_STANDALONE=1" in result.stdout
+    assert "GZ_IP=127.0.0.1" in result.stdout
 
     source = SCRIPT.read_text(encoding="utf-8")
     assert 'gz sim "${gz_args[@]}" </dev/null &' in source
