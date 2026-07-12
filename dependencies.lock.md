@@ -17,3 +17,5 @@ The following revisions were read from the NUC on 2026-07-12. Clone these upstre
 The inspected PX4 checkout was not clean: `Tools/simulation/gz` was modified and an untracked Xtensa toolchain archive existed under `Tools/setup/`. Those local files are deliberately excluded from this baseline. Review and preserve them separately if they represent intentional work.
 
 The former Astra driver workspace is also deliberately excluded because the competition camera has not been selected.
+
+The NUC Gazebo-model submodule currently contains an uncommitted `realsense_d435` model, an `x500_depth` override and RoboCup course assets. These are project-owned migration candidates, not part of the clean upstream commit recorded above. Do not reset that submodule before the assets are reviewed and migrated.
