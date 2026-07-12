@@ -1,0 +1,35 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# PX4 build and logs
+PX4-Autopilot/build/
+*.ulg
+
+# ROS bags and captured media
+*.bag
+*.db3
+*.mcap
+*.mp4
+*.avi
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+.ssh/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
