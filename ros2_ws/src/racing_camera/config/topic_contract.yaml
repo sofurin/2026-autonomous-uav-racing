@@ -3,6 +3,10 @@ camera_adapter:
     color_image_topic: /camera/color/image_raw
     color_camera_info_topic: /camera/color/camera_info
     depth_image_topic: /camera/depth/image_raw
+    depth_camera_info_topic: /camera/depth/camera_info
+    point_cloud_topic: /camera/depth/image_raw/points
+    infra1_image_topic: /camera/infra1/image_raw
+    infra2_image_topic: /camera/infra2/image_raw
     camera_frame: camera_link
     optical_frame: camera_optical_frame
-    use_depth: false
+    use_depth: true

@@ -109,7 +109,7 @@ The launcher prepends those directories to `GZ_SIM_RESOURCE_PATH`. A new top-lev
 
 This proves the NUC ROS 2/PX4 simulation transport. It does not prove Offboard command behavior, real camera behavior, flight-controller serial transport or real flight safety.
 
-## Legacy files that must not be deleted yet
+## Legacy files retained during migration validation
 
 The PX4 Gazebo-model submodule on the NUC contains uncommitted project work:
 
@@ -119,4 +119,14 @@ The PX4 Gazebo-model submodule on the NUC contains uncommitted project work:
 - untracked `robocup_2025/` scoring, route and vision-baseline scripts
 - additional modifications to `OakD-Lite` and `x500_base`
 
-These files currently make the legacy simulation work. They need a separate reviewed migration into `racing_simulation` before the old PX4 tree can be cleaned or replaced.
+The project now owns reviewed copies of the RoboCup 2025 baseline world,
+obstacle models, course/scoring tools and a D435-compatible `x500_depth`
+override under `racing_simulation`. The external PX4 checkout is still required
+for SITL itself, but these migrated assets no longer depend on the dirty Gazebo
+model submodule. The legacy 16 MB D435 mesh was copied at the project owner's
+request and is tracked with an explicit provenance warning because its source
+directory did not contain a license file.
+
+Do not clean the old PX4 tree until the migrated default world and RoboCup
+world have both passed runtime validation. The `OakD-Lite` and `x500_base`
+changes remain legacy-only compatibility experiments and were not migrated.

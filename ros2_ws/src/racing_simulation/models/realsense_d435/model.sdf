@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <model name="realsense_d435">
+    <self_collide>false</self_collide>
+    <static>false</static>
+    <link name="camera_link">
+      <inertial>
+        <pose>0.012525 -0.0175 0.0125 0 0 0</pose>
+        <mass>0.072</mass>
+        <inertia>
+          <ixx>0.0000431</ixx>
+          <iyy>0.0000501</iyy>
+          <izz>0.0000066</izz>
+        </inertia>
+      </inertial>
+      <visual name="body_visual">
+        <pose>0.0043 -0.0175 0 1.5708 0 1.5708</pose>
+        <geometry>
+          <mesh>
+            <uri>model://realsense_d435/meshes/d435.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.12 0.12 0.12 1</ambient>
+          <diffuse>0.18 0.18 0.18 1</diffuse>
+        </material>
+      </visual>
+      <collision name="body_collision">
+        <pose>0.012525 -0.0175 0.0125 0 0 0</pose>
+        <geometry>
+          <box><size>0.02505 0.090 0.025</size></box>
+        </geometry>
+      </collision>
+
+      <sensor name="color_rgb" type="camera">
+        <topic>/camera/color/image_raw</topic>
+        <camera_info_topic>/camera/color/camera_info</camera_info_topic>
+        <pose>0 0.015 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.211</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>R8G8B8</format></image>
+          <clip><near>0.15</near><far>65.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="depth_stereo" type="depth_camera">
+        <topic>/camera/depth/image_raw</topic>
+        <camera_info_topic>/camera/depth/camera_info</camera_info_topic>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>R_FLOAT32</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="infra_left" type="camera">
+        <topic>/camera/infra1/image_raw</topic>
+        <pose>0 0 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>L8</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="infra_right" type="camera">
+        <topic>/camera/infra2/image_raw</topic>
+        <pose>0 -0.050 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>L8</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+    </link>
+  </model>
+</sdf>
