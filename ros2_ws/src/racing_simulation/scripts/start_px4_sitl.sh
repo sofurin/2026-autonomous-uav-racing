@@ -107,6 +107,10 @@ if [[ ! -d "$px4_dir" ]]; then
 fi
 
 resource_paths=()
+px4_models_dir="$px4_dir/Tools/simulation/gz/models"
+if [[ -d "$px4_models_dir" ]]; then
+  resource_paths+=("$px4_models_dir")
+fi
 if [[ -n "$models_dir" ]]; then
   [[ -d "$models_dir" ]] || {
     printf 'Gazebo model directory does not exist: %s\n' "$models_dir" >&2
@@ -130,9 +134,15 @@ if ((${#resource_paths[@]})); then
   export GZ_SIM_RESOURCE_PATH
 fi
 
+project_world=""
+if [[ -n "$worlds_dir" && -f "$worlds_dir/$world.sdf" ]]; then
+  project_world="$worlds_dir/$world.sdf"
+fi
+
 export PX4_SIM_MODEL="$model"
 export PX4_GZ_WORLD="$world"
 export PX4_GZ_MODEL_POSE="$pose"
+export GZ_IP="${GZ_IP:-127.0.0.1}"
 if ((headless)); then
   export HEADLESS=1
 else
@@ -145,8 +155,39 @@ if ((dry_run)); then
   printf 'PX4_GZ_WORLD=%s\n' "$PX4_GZ_WORLD"
   printf 'PX4_GZ_MODEL_POSE=%s\n' "$PX4_GZ_MODEL_POSE"
   printf 'GZ_SIM_RESOURCE_PATH=%s\n' "${GZ_SIM_RESOURCE_PATH:-}"
-  printf 'make px4_sitl %s\n' "$model"
+  printf 'GZ_IP=%s\n' "$GZ_IP"
+  if [[ -n "$project_world" ]]; then
+    printf 'PROJECT_GZ_WORLD=%s\n' "$project_world"
+    if ((headless)); then
+      printf 'gz sim -r -s %s\n' "$project_world"
+    else
+      printf 'gz sim -r %s\n' "$project_world"
+    fi
+    printf 'PX4_GZ_STANDALONE=1 make px4_sitl %s\n' "$model"
+  else
+    printf 'make px4_sitl %s\n' "$model"
+  fi
   exit 0
+fi
+
+if [[ -n "$project_world" ]]; then
+  gz_args=(-r)
+  if ((headless)); then
+    gz_args+=(-s)
+  fi
+  gz_args+=("$project_world")
+
+  gz sim "${gz_args[@]}" </dev/null &
+  gz_pid=$!
+  cleanup() {
+    kill -INT "$gz_pid" 2>/dev/null || true
+    wait "$gz_pid" 2>/dev/null || true
+  }
+  trap cleanup EXIT
+
+  export PX4_GZ_STANDALONE=1
+  make -C "$px4_dir" px4_sitl "$model"
+  exit $?
 fi
 
 exec make -C "$px4_dir" px4_sitl "$model"

@@ -34,3 +34,29 @@ def test_project_bringup_includes_the_simulation_orchestrator() -> None:
     assert 'get_package_share_directory("racing_simulation")' in source
     assert '"sitl.launch.py"' in source
     assert '"px4_model"' in source
+
+
+def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> None:
+    source = (PACKAGE_ROOT / "launch" / "sitl.launch.py").read_text(encoding="utf-8")
+
+    for argument in (
+        "color_camera_info_topic",
+        "depth_camera_info_topic",
+        "point_cloud_topic",
+        "infra1_topic",
+        "infra2_topic",
+    ):
+        assert f'"{argument}"' in source
+
+    assert "sensor_msgs/msg/CameraInfo" in source
+    assert "sensor_msgs/msg/PointCloud2" in source
+    assert "gz.msgs.PointCloudPacked" in source
+    assert 'additional_env={"GZ_IP": "127.0.0.1"}' in source
+
+    d435 = (PACKAGE_ROOT / "models" / "realsense_d435" / "model.sdf").read_text(
+        encoding="utf-8"
+    )
+    assert "/camera/color/image_raw" in d435
+    assert "/camera/depth/image_raw" in d435
+    assert "/camera/infra1/image_raw" in d435
+    assert "/camera/infra2/image_raw" in d435

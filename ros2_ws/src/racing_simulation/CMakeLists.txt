@@ -3,7 +3,7 @@ project(racing_simulation)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY config launch models worlds DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY config launch models tools worlds DESTINATION share/${PROJECT_NAME})
 install(PROGRAMS scripts/start_px4_sitl.sh DESTINATION share/${PROJECT_NAME}/scripts)
 
 if(BUILD_TESTING)
@@ -16,6 +16,12 @@ if(BUILD_TESTING)
   ament_add_pytest_test(
     test_launch_contract
     test/test_launch_contract.py
+    TIMEOUT 30
+  )
+  ament_add_pytest_test(
+    test_robocup_2025_course
+    tools/robocup_2025
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/robocup_2025
     TIMEOUT 30
   )
 endif()

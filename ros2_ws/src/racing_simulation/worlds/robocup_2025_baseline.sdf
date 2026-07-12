@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <world name="robocup_2025_baseline">
+    <physics type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic"/>
+    <scene>
+      <grid>false</grid>
+      <ambient>0.45 0.45 0.45 1</ambient>
+      <background>0.72 0.74 0.76 1</background>
+      <shadows>false</shadows>
+    </scene>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>14 14</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.78 0.80 0.78 1</ambient>
+            <diffuse>0.78 0.80 0.78 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <light name="sunUTC" type="directional">
+      <pose>0 0 500 0 0 0</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.9</intensity>
+      <direction>0.001 0.625 -0.78</direction>
+      <diffuse>0.904 0.904 0.904 1</diffuse>
+      <specular>0.271 0.271 0.271 1</specular>
+      <attenuation>
+        <range>2000</range>
+        <linear>0</linear>
+        <constant>1</constant>
+        <quadratic>0</quadratic>
+      </attenuation>
+    </light>
+
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>47.397971057728974</latitude_deg>
+      <longitude_deg>8.546163739800146</longitude_deg>
+      <elevation>0</elevation>
+    </spherical_coordinates>
+
+    <!-- 10 m x 10 m competition boundary and 4 m ceiling reference. -->
+    <model name="field_boundary">
+      <static>true</static>
+      <link name="north"><pose>0 5 0.035 0 0 0</pose><visual name="visual"><geometry><box><size>10 0.06 0.07</size></box></geometry><material><diffuse>0.05 0.18 0.8 1</diffuse></material></visual></link>
+      <link name="south"><pose>0 -5 0.035 0 0 0</pose><visual name="visual"><geometry><box><size>10 0.06 0.07</size></box></geometry><material><diffuse>0.05 0.18 0.8 1</diffuse></material></visual></link>
+      <link name="east"><pose>5 0 0.035 0 0 0</pose><visual name="visual"><geometry><box><size>0.06 10 0.07</size></box></geometry><material><diffuse>0.05 0.18 0.8 1</diffuse></material></visual></link>
+      <link name="west"><pose>-5 0 0.035 0 0 0</pose><visual name="visual"><geometry><box><size>0.06 10 0.07</size></box></geometry><material><diffuse>0.05 0.18 0.8 1</diffuse></material></visual></link>
+      <link name="ceiling_north"><pose>0 5 4.0 0 0 0</pose><visual name="visual"><geometry><box><size>10 0.03 0.03</size></box></geometry><material><diffuse>1 0.15 0.1 1</diffuse></material></visual></link>
+      <link name="ceiling_south"><pose>0 -5 4.0 0 0 0</pose><visual name="visual"><geometry><box><size>10 0.03 0.03</size></box></geometry><material><diffuse>1 0.15 0.1 1</diffuse></material></visual></link>
+      <link name="ceiling_east"><pose>5 0 4.0 0 0 0</pose><visual name="visual"><geometry><box><size>0.03 10 0.03</size></box></geometry><material><diffuse>1 0.15 0.1 1</diffuse></material></visual></link>
+      <link name="ceiling_west"><pose>-5 0 4.0 0 0 0</pose><visual name="visual"><geometry><box><size>0.03 10 0.03</size></box></geometry><material><diffuse>1 0.15 0.1 1</diffuse></material></visual></link>
+    </model>
+
+    <model name="start_zone">
+      <pose>-4 -4 0.011 0 0 0</pose>
+      <static>true</static>
+      <link name="visual_only">
+        <visual name="visual">
+          <geometry><box><size>1.2 1.6 0.02</size></box></geometry>
+          <material><ambient>0.1 0.35 1 1</ambient><diffuse>0.1 0.35 1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="landing_zone">
+      <pose>4 4 0.012 0 0 0</pose>
+      <static>true</static>
+      <link name="visual_only">
+        <visual name="visual">
+          <geometry><box><size>1.2 1.6 0.02</size></box></geometry>
+          <material><ambient>0.1 0.75 0.25 1</ambient><diffuse>0.1 0.75 0.25 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Reusable obstacle models placed along the dashed S-shaped rule-book path. -->
+    <include>
+      <name>path_01_obs1_square_gate</name>
+      <uri>model://robocup_obs1_square_gate</uri>
+      <pose>-1.70 -3.75 0 0 0 0.000000</pose>
+    </include>
+    <include>
+      <name>path_02_obs2_round_gate</name>
+      <uri>model://robocup_obs2_round_gate</uri>
+      <pose>0.55 -3.55 0 0 0 0.209440</pose>
+    </include>
+    <include>
+      <name>path_03_obs3_double_gate</name>
+      <uri>model://robocup_obs3_double_gate</uri>
+      <pose>2.45 -2.75 0 0 0 0.436332</pose>
+    </include>
+    <include>
+      <name>path_04_obs2_round_gate</name>
+      <uri>model://robocup_obs2_round_gate</uri>
+      <pose>2.45 -1.25 0 0 0 0.087266</pose>
+    </include>
+    <include>
+      <name>path_05_obs4_flip_gate</name>
+      <uri>model://robocup_obs4_flip_gate</uri>
+      <pose>0.35 -1.35 0 0 0 0.139626</pose>
+    </include>
+    <include>
+      <name>path_06_obs2_round_gate</name>
+      <uri>model://robocup_obs2_round_gate</uri>
+      <pose>-2.20 -1.55 0 0 0 -0.209440</pose>
+    </include>
+    <include>
+      <name>path_07_obs1_square_gate</name>
+      <uri>model://robocup_obs1_square_gate</uri>
+      <pose>-2.70 2.55 0 0 0 -0.314159</pose>
+    </include>
+    <include>
+      <name>path_08_obs5_flag</name>
+      <uri>model://robocup_obs5_flag</uri>
+      <pose>0.00 2.75 0 0 0 0.000000</pose>
+    </include>
+    <include>
+      <name>path_09_obs1_square_gate</name>
+      <uri>model://robocup_obs1_square_gate</uri>
+      <pose>2.65 2.85 0 0 0 0.000000</pose>
+    </include>
+
+    <model name="baseline_route_markers">
+      <static>true</static>
+      <link name="takeoff"><pose>-4.0 -3.65 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.07</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.30 0.05 1</diffuse></material></visual></link>
+      <link name="path_01"><pose>-1.70 -3.75 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_02"><pose>0.55 -3.55 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_03"><pose>2.45 -2.75 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_04"><pose>2.45 -1.25 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_05"><pose>0.35 -1.35 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_06"><pose>-2.20 -1.55 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_07"><pose>-2.70 2.55 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_08"><pose>0.00 2.75 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="path_09"><pose>2.65 2.85 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.04</length></cylinder></geometry><material><diffuse>1.0 0.78 0.05 1</diffuse></material></visual></link>
+      <link name="landing"><pose>4.0 3.65 0.04 0 0 0</pose><visual name="visual"><geometry><cylinder><radius>0.07</radius><length>0.04</length></cylinder></geometry><material><diffuse>0.15 1.0 0.25 1</diffuse></material></visual></link>
+    </model>
+  </world>
+</sdf>

@@ -10,8 +10,9 @@ def run_script(tmp_path: Path, *arguments: str) -> subprocess.CompletedProcess[s
     models_dir = tmp_path / "models"
     worlds_dir = tmp_path / "worlds"
     px4_dir.mkdir()
-    models_dir.mkdir()
-    worlds_dir.mkdir()
+    (px4_dir / "Tools/simulation/gz/models").mkdir(parents=True)
+    models_dir.mkdir(exist_ok=True)
+    worlds_dir.mkdir(exist_ok=True)
 
     return subprocess.run(
         [
@@ -56,6 +57,24 @@ def test_accepts_a_future_team_model_without_changing_the_script(tmp_path: Path)
     assert "PX4_GZ_WORLD=team_course" in result.stdout
     assert "PX4_GZ_MODEL_POSE=-4,-3.65,0,0,0,0" in result.stdout
     assert "make px4_sitl gz_team_racer" in result.stdout
+
+
+def test_starts_a_project_owned_world_before_px4_standalone(tmp_path: Path) -> None:
+    worlds_dir = tmp_path / "worlds"
+    worlds_dir.mkdir()
+    (worlds_dir / "team_course.sdf").write_text("<sdf version='1.9'/>")
+
+    result = run_script(tmp_path, "--world", "team_course")
+
+    assert result.returncode == 0, result.stderr
+    assert f"PROJECT_GZ_WORLD={worlds_dir / 'team_course.sdf'}" in result.stdout
+    assert str(tmp_path / "PX4-Autopilot" / "Tools/simulation/gz/models") in result.stdout
+    assert f"gz sim -r {worlds_dir / 'team_course.sdf'}" in result.stdout
+    assert "PX4_GZ_STANDALONE=1" in result.stdout
+    assert "GZ_IP=127.0.0.1" in result.stdout
+
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert 'gz sim "${gz_args[@]}" </dev/null &' in source
 
 
 def test_rejects_a_model_name_that_could_be_interpreted_as_shell_code(
