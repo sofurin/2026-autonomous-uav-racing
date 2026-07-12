@@ -74,14 +74,22 @@ ros2 launch racing_bringup bringup.launch.py mode:=simulation
 ros2 launch racing_bringup bringup.launch.py mode:=hardware
 ```
 
-The launch implementation does not exist yet. When added, `mode` must select:
+The launch implementation now selects the external PX4 SITL process, UDP XRCE Agent and Gazebo camera bridge. `mode` selects:
 
 - the virtual or physical camera adapter
 - PX4 SITL or the real flight-controller endpoint
 - simulation clock behavior
 - the correct calibration and sensor-frame configuration
 
-It must not fork the perception or planning implementation into separate simulation and hardware versions.
+It does not fork the perception or planning implementation into separate simulation and hardware versions. The current simulation entry point is:
+
+```bash
+ros2 launch racing_bringup bringup.launch.py \
+  mode:=simulation \
+  px4_model:=gz_x500_depth
+```
+
+Set `px4_model` and `px4_world` to move to a PX4-registered team model. Project-owned model and world resources are supplied through `GZ_SIM_RESOURCE_PATH`; the integration details remain confined to `racing_simulation`.
 
 ## Validation gates
 

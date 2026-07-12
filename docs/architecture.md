@@ -57,9 +57,9 @@ The checked-in launcher keeps these capabilities configurable and defaults `ROS_
 | --- | --- | --- |
 | NUC network and SSH | Verified | `nuc-13` reachable at `192.168.1.129` over Wi-Fi |
 | ROS 2 container | Verified running | `ros2_humble_main` was running |
-| ROS 2 application graph | Not running | only interactive shells were present in the container |
+| ROS 2 application graph | Simulation bridge verified | project launch started TF and exposed PX4 DDS topics |
 | PX4 source baseline | Verified on disk | `release/1.17` checkout found |
-| XRCE Agent process | Not running | no Agent process found |
+| XRCE Agent process | Verified on demand | project launch established a UDP 8888 session with PX4 SITL |
 | Flight-controller transport | Not verified | no `/dev/ttyACM*`, `/dev/ttyUSB*` or `/dev/serial/by-id` detected |
 | Competition camera | Undecided | do not treat the old Astra workspace as the selected camera |
 | Real motor/flight behavior | Not tested | no claim of hardware or flight success |
