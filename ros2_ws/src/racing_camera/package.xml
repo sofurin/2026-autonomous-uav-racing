@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>racing_camera</name>
+  <version>0.1.0</version>
+  <description>Vendor-neutral camera configuration and topic normalization.</description>
+  <maintainer email="486rem22@users.noreply.github.com">ZJUT UAV Racing Team</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>camera_info_manager</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
