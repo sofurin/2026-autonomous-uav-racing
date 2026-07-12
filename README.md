@@ -47,8 +47,26 @@ NUC 负责感知、定位、赛道决策和高层轨迹；PX4 飞控负责状态
 ## 文档
 
 - [`docs/architecture.md`](docs/architecture.md)：系统边界、链路与当前验证状态
+- [`docs/simulation-and-camera.md`](docs/simulation-and-camera.md)：仿真、相机抽象和真机/仿真切换约定
 - [`docs/bringup.md`](docs/bringup.md)：建议的上电和启动顺序
 - [`docs/decisions/ADR-001-px4-native-ros2-dds.md`](docs/decisions/ADR-001-px4-native-ros2-dds.md)：采用 PX4 原生 ROS 2 DDS 桥接的决策
+
+## 规划中的 ROS 2 包
+
+```text
+ros2_ws/src/
+├─ racing_bringup/          # 真机与仿真的统一启动入口
+├─ racing_description/      # 无人机模型、传感器安装位姿和坐标系
+├─ racing_camera/           # 相机驱动适配、参数与标定入口
+├─ racing_perception/       # 门框和障碍物感知
+├─ racing_localization/     # 视觉与飞控状态融合定位
+├─ racing_planning/         # 赛道决策与轨迹规划
+├─ racing_px4_control/      # Offboard 与 px4_msgs 接口
+├─ racing_simulation/       # PX4 SITL、Gazebo 场景和虚拟传感器
+└─ racing_test/             # 录包回放与集成测试
+```
+
+这些目录表示接口边界，不表示对应功能已经实现。创建具体 ROS 2 包时再加入 `package.xml`、构建文件和测试。
 
 ## 仓库约定
 
