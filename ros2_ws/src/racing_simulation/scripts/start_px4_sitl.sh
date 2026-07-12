@@ -107,6 +107,10 @@ if [[ ! -d "$px4_dir" ]]; then
 fi
 
 resource_paths=()
+px4_models_dir="$px4_dir/Tools/simulation/gz/models"
+if [[ -d "$px4_models_dir" ]]; then
+  resource_paths+=("$px4_models_dir")
+fi
 if [[ -n "$models_dir" ]]; then
   [[ -d "$models_dir" ]] || {
     printf 'Gazebo model directory does not exist: %s\n' "$models_dir" >&2

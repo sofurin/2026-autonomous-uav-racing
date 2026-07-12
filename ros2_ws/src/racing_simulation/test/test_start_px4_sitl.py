@@ -10,6 +10,7 @@ def run_script(tmp_path: Path, *arguments: str) -> subprocess.CompletedProcess[s
     models_dir = tmp_path / "models"
     worlds_dir = tmp_path / "worlds"
     px4_dir.mkdir()
+    (px4_dir / "Tools/simulation/gz/models").mkdir(parents=True)
     models_dir.mkdir(exist_ok=True)
     worlds_dir.mkdir(exist_ok=True)
 
@@ -67,6 +68,7 @@ def test_starts_a_project_owned_world_before_px4_standalone(tmp_path: Path) -> N
 
     assert result.returncode == 0, result.stderr
     assert f"PROJECT_GZ_WORLD={worlds_dir / 'team_course.sdf'}" in result.stdout
+    assert str(tmp_path / "PX4-Autopilot" / "Tools/simulation/gz/models") in result.stdout
     assert f"gz sim -r {worlds_dir / 'team_course.sdf'}" in result.stdout
     assert "PX4_GZ_STANDALONE=1" in result.stdout
 
