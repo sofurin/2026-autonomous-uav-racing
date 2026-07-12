@@ -1,0 +1,103 @@
+from pathlib import Path
+
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, LogInfo
+from launch.conditions import IfCondition
+from launch.substitutions import EnvironmentVariable, LaunchConfiguration
+from launch_ros.actions import Node
+
+
+def generate_launch_description():
+    package_share = Path(get_package_share_directory("racing_simulation"))
+    start_script = package_share / "scripts" / "start_px4_sitl.sh"
+
+    px4_dir = LaunchConfiguration("px4_dir")
+    px4_model = LaunchConfiguration("px4_model")
+    px4_world = LaunchConfiguration("px4_world")
+    px4_model_pose = LaunchConfiguration("px4_model_pose")
+    start_px4 = LaunchConfiguration("start_px4")
+    start_xrce_agent = LaunchConfiguration("start_xrce_agent")
+    start_camera_bridge = LaunchConfiguration("start_camera_bridge")
+    headless = LaunchConfiguration("headless")
+    xrce_agent_port = LaunchConfiguration("xrce_agent_port")
+    color_topic = LaunchConfiguration("color_topic")
+    depth_topic = LaunchConfiguration("depth_topic")
+
+    px4 = ExecuteProcess(
+        cmd=[
+            str(start_script),
+            "--px4-dir",
+            px4_dir,
+            "--model",
+            px4_model,
+            "--world",
+            px4_world,
+            "--pose",
+            px4_model_pose,
+            "--models-dir",
+            str(package_share / "models"),
+            "--worlds-dir",
+            str(package_share / "worlds"),
+        ],
+        additional_env={"RACING_HEADLESS": headless},
+        condition=IfCondition(start_px4),
+        output="screen",
+        emulate_tty=True,
+    )
+
+    xrce_agent = ExecuteProcess(
+        cmd=["MicroXRCEAgent", "udp4", "-p", xrce_agent_port],
+        condition=IfCondition(start_xrce_agent),
+        output="screen",
+        emulate_tty=True,
+    )
+
+    camera_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        name="racing_camera_bridge",
+        arguments=[
+            [color_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
+            [depth_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
+        ],
+        condition=IfCondition(start_camera_bridge),
+        output="screen",
+    )
+
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument(
+                "px4_dir",
+                default_value=EnvironmentVariable(
+                    "PX4_AUTOPILOT_DIR",
+                    default_value="/root/docker_ws/uav_test/src/PX4-Autopilot",
+                ),
+                description="External PX4-Autopilot checkout used by SITL.",
+            ),
+            DeclareLaunchArgument(
+                "px4_model",
+                default_value="gz_x500_depth",
+                description="PX4 Gazebo model target; replace for the team airframe.",
+            ),
+            DeclareLaunchArgument("px4_world", default_value="default"),
+            DeclareLaunchArgument(
+                "px4_model_pose", default_value="0,0,0,0,0,0"
+            ),
+            DeclareLaunchArgument("start_px4", default_value="true"),
+            DeclareLaunchArgument("start_xrce_agent", default_value="true"),
+            DeclareLaunchArgument("start_camera_bridge", default_value="true"),
+            DeclareLaunchArgument("headless", default_value="false"),
+            DeclareLaunchArgument("xrce_agent_port", default_value="8888"),
+            DeclareLaunchArgument(
+                "color_topic", default_value="/camera/color/image_raw"
+            ),
+            DeclareLaunchArgument(
+                "depth_topic", default_value="/camera/depth/image_raw"
+            ),
+            LogInfo(msg=["PX4 SITL model: ", px4_model, ", world: ", px4_world]),
+            px4,
+            xrce_agent,
+            camera_bridge,
+        ]
+    )

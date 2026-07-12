@@ -26,7 +26,14 @@ world="${PX4_GZ_WORLD:-default}"
 pose="${PX4_GZ_MODEL_POSE:-0,0,0,0,0,0}"
 models_dir="${RACING_GZ_MODELS_DIR:-}"
 worlds_dir="${RACING_GZ_WORLDS_DIR:-}"
-headless=0
+case "${RACING_HEADLESS:-false}" in
+  1|true|TRUE|yes|YES)
+    headless=1
+    ;;
+  *)
+    headless=0
+    ;;
+esac
 dry_run=0
 
 while (($#)); do
@@ -128,6 +135,8 @@ export PX4_GZ_WORLD="$world"
 export PX4_GZ_MODEL_POSE="$pose"
 if ((headless)); then
   export HEADLESS=1
+else
+  unset HEADLESS || true
 fi
 
 if ((dry_run)); then
