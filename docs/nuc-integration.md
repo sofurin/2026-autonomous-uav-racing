@@ -17,6 +17,24 @@ The NUC keeps upstream and legacy simulation dependencies outside this repositor
 
 The repository does not copy PX4 or `px4_msgs`. It points to the external PX4 checkout through the `px4_dir` launch argument and sources `uav_test/install/setup.bash` before building the project overlay.
 
+## Gazebo GUI authorization
+
+The current container runs as root and displays Gazebo through the NUC user's
+Wayland/Xwayland desktop session. GNOME starts
+`scripts/authorize_gazebo_x11.sh` after login. The script discovers Mutter's
+per-session Xauthority file and grants access only to the local root user with
+`xhost +SI:localuser:root`; it does not disable X11 access control globally.
+
+The desktop entry is installed at:
+
+```text
+~/.config/autostart/racing-gazebo-x11.desktop
+```
+
+Inside the container, set `DISPLAY=:0` before launching the simulation. The
+authorization is tied to the active graphical login and is refreshed
+automatically at the next GNOME login.
+
 ## Build on the NUC
 
 Inside `ros2_humble_main`:

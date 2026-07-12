@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Racing Gazebo X11 Authorization
+Comment=Allow the local Docker root user to display Gazebo through Xwayland
+Exec=/home/zjutdeus/docker_ws/2026-autonomous-uav-racing/scripts/authorize_gazebo_x11.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=GNOME;
