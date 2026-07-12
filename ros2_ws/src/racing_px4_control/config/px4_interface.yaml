@@ -1,0 +1,7 @@
+px4_interface:
+  ros__parameters:
+    transport: unset
+    offboard_heartbeat_hz: 10.0
+    command_frame: NED
+    require_manual_takeover: true
+    allow_arming_command: false

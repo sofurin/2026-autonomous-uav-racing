@@ -1,0 +1,8 @@
+camera_adapter:
+  ros__parameters:
+    color_image_topic: /camera/color/image_raw
+    color_camera_info_topic: /camera/color/camera_info
+    depth_image_topic: /camera/depth/image_raw
+    camera_frame: camera_link
+    optical_frame: camera_optical_frame
+    use_depth: false

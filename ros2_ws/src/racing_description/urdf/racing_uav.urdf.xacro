@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="racing_uav">
+  <!-- Placeholder transform only. Replace the camera pose after mechanical measurement. -->
+  <xacro:arg name="camera_xyz" default="0 0 0"/>
+  <xacro:arg name="camera_rpy" default="0 0 0"/>
+
+  <link name="base_link"/>
+  <link name="camera_link"/>
+  <link name="camera_optical_frame"/>
+
+  <joint name="base_to_camera" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="$(arg camera_xyz)" rpy="$(arg camera_rpy)"/>
+  </joint>
+
+  <joint name="camera_to_optical" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+</robot>

@@ -1,0 +1,6 @@
+simulation:
+  ros__parameters:
+    use_sim_time: true
+    world: racing_empty
+    px4_transport: udp
+    camera_topic_contract: /camera

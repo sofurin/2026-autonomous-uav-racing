@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>racing_simulation</name>
+  <version>0.1.0</version>
+  <description>PX4 SITL, simulator worlds and virtual sensor configuration.</description>
+  <maintainer email="486rem22@users.noreply.github.com">ZJUT UAV Racing Team</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>racing_description</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
