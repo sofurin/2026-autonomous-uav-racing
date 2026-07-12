@@ -71,3 +71,19 @@ The checked-in launcher keeps these capabilities configurable and defaults `ROS_
 3. Record the exact flight-controller board and flashed PX4 revision.
 4. Define command authority, offboard-loss behavior and manual takeover.
 5. Add the team's perception, planning and mission nodes with interface contracts.
+
+## Hardware and simulation parity
+
+The perception and autonomy layers must not depend directly on a vendor camera SDK or a Gazebo plugin. Hardware and simulation adapters publish the same ROS 2 topic contract:
+
+```text
+Hardware camera driver ----\
+                            -> racing_camera -> perception -> localization/planning
+Gazebo virtual camera -----/                                      |
+                                                                  v
+                                                    racing_px4_control
+                                                        /        \
+                                                PX4 hardware    PX4 SITL
+```
+
+The bring-up layer selects the adapter and PX4 endpoint. Downstream perception, localization and planning nodes remain unchanged between hardware and simulation.
