@@ -31,6 +31,18 @@ def test_team_airframe_visual_mesh_is_part_of_the_description():
     assert mesh.stat().st_size > 1_000_000
 
 
+def test_team_airframe_visual_maps_cad_axes_to_ros_axes():
+    model = PACKAGE_ROOT / "urdf" / "racing_uav.urdf.xacro"
+
+    document = xacro.process_file(str(model))
+    visual_origin = document.getElementsByTagName("visual")[0].getElementsByTagName(
+        "origin"
+    )[0]
+
+    # SolidWorks: Y is model height. ROS: X forward, Y left, Z up.
+    assert visual_origin.getAttribute("rpy") == "1.57079632679 0 1.57079632679"
+
+
 def test_description_package_installs_mesh_resources():
     cmake = (PACKAGE_ROOT / "CMakeLists.txt").read_text(encoding="utf-8")
 
