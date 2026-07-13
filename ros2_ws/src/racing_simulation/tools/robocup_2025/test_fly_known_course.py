@@ -3,7 +3,12 @@
 import unittest
 from pathlib import Path
 
-from fly_known_course import enu_to_local_ned, route_to_local_setpoints, set_offboard_mode
+from fly_known_course import (
+    enu_to_local_ned,
+    request_message_interval,
+    route_to_local_setpoints,
+    set_offboard_mode,
+)
 from score_checker import load_course
 
 
@@ -40,6 +45,32 @@ class FlyKnownCourseTest(unittest.TestCase):
 
         set_offboard_mode(FakeVehicle())
         self.assertEqual(calls, ["OFFBOARD"])
+
+    def test_requests_local_position_with_set_message_interval(self):
+        calls = []
+
+        class Ack:
+            command = 511
+            result = 0
+
+        class FakeMav:
+            def command_long_send(self, *args):
+                calls.append(args)
+
+        class FakeVehicle:
+            target_system = 1
+            target_component = 0
+            mav = FakeMav()
+
+            def recv_match(self, **_kwargs):
+                return Ack()
+
+        request_message_interval(FakeVehicle(), message_id=32, frequency_hz=20.0)
+
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][2], 511)
+        self.assertEqual(calls[0][4], 32)
+        self.assertEqual(calls[0][5], 50_000)
 
 
 if __name__ == "__main__":

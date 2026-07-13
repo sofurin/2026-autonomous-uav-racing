@@ -11,6 +11,9 @@ def run_script(tmp_path: Path, *arguments: str) -> subprocess.CompletedProcess[s
     worlds_dir = tmp_path / "worlds"
     px4_dir.mkdir()
     (px4_dir / "Tools/simulation/gz/models").mkdir(parents=True)
+    (px4_dir / "Tools/simulation/gz/server.config").write_text(
+        "<server_config/>", encoding="utf-8"
+    )
     models_dir.mkdir(exist_ok=True)
     worlds_dir.mkdir(exist_ok=True)
 
@@ -39,6 +42,11 @@ def test_defaults_to_the_current_x500_depth_baseline(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr
     assert "PX4_SIM_MODEL=gz_x500_depth" in result.stdout
     assert "PX4_GZ_WORLD=default" in result.stdout
+    assert (
+        f"GZ_SIM_SERVER_CONFIG_PATH="
+        f"{tmp_path / 'PX4-Autopilot' / 'Tools/simulation/gz/server.config'}"
+        in result.stdout
+    )
     assert "make px4_sitl gz_x500_depth" in result.stdout
 
 
