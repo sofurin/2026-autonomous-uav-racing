@@ -62,6 +62,19 @@ def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> N
     assert "/camera/infra2/image_raw" in d435
 
 
+def test_x500_depth_point_cloud_source_is_remapped_to_the_camera_contract() -> None:
+    source = (PACKAGE_ROOT / "launch" / "sitl.launch.py").read_text(encoding="utf-8")
+
+    assert '"gz_point_cloud_topic"' in source
+    assert 'default_value="/depth_camera/points"' in source
+    assert "(gz_point_cloud_topic, point_cloud_topic)" in source
+
+    bringup_source = (
+        SRC_ROOT / "racing_bringup" / "launch" / "simulation.launch.py"
+    ).read_text(encoding="utf-8")
+    assert '"gz_point_cloud_topic"' in bringup_source
+
+
 def test_sitl_uses_the_px4_owned_gazebo_server_config() -> None:
     launch_source = (PACKAGE_ROOT / "launch" / "sitl.launch.py").read_text(
         encoding="utf-8"

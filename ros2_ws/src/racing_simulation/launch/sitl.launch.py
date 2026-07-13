@@ -25,6 +25,7 @@ def generate_launch_description():
     color_camera_info_topic = LaunchConfiguration("color_camera_info_topic")
     depth_topic = LaunchConfiguration("depth_topic")
     depth_camera_info_topic = LaunchConfiguration("depth_camera_info_topic")
+    gz_point_cloud_topic = LaunchConfiguration("gz_point_cloud_topic")
     point_cloud_topic = LaunchConfiguration("point_cloud_topic")
     infra1_topic = LaunchConfiguration("infra1_topic")
     infra2_topic = LaunchConfiguration("infra2_topic")
@@ -74,13 +75,14 @@ def generate_launch_description():
                 "@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
             ],
             [
-                point_cloud_topic,
+                gz_point_cloud_topic,
                 "@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
             ],
             [infra1_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
             [infra2_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
         ],
         condition=IfCondition(start_camera_bridge),
+        remappings=[(gz_point_cloud_topic, point_cloud_topic)],
         additional_env={"GZ_IP": "127.0.0.1"},
         output="screen",
     )
@@ -124,8 +126,14 @@ def generate_launch_description():
                 default_value="/camera/depth/camera_info",
             ),
             DeclareLaunchArgument(
+                "gz_point_cloud_topic",
+                default_value="/depth_camera/points",
+                description="Gazebo point-cloud source published by gz_x500_depth.",
+            ),
+            DeclareLaunchArgument(
                 "point_cloud_topic",
                 default_value="/camera/depth/image_raw/points",
+                description="Stable ROS point-cloud topic exposed to perception and RViz.",
             ),
             DeclareLaunchArgument(
                 "infra1_topic", default_value="/camera/infra1/image_raw"

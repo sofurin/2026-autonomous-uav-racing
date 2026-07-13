@@ -25,6 +25,7 @@ def generate_launch_description():
             "xrce_agent_port",
             "color_topic",
             "depth_topic",
+            "gz_point_cloud_topic",
         )
     }
 
@@ -49,6 +50,9 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "depth_topic", default_value="/camera/depth/image_raw"
+            ),
+            DeclareLaunchArgument(
+                "gz_point_cloud_topic", default_value="/depth_camera/points"
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
