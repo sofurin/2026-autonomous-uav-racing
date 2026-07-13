@@ -44,8 +44,6 @@ def generate_launch_description():
             str(package_share / "models"),
             "--worlds-dir",
             str(package_share / "worlds"),
-            "--server-config",
-            str(package_share / "config" / "gazebo_server.config"),
         ],
         additional_env={"RACING_HEADLESS": headless},
         condition=IfCondition(start_px4),

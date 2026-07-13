@@ -144,6 +144,11 @@ def connect(connection: str):
         20,
         1,
     )
+    request_message_interval(
+        vehicle,
+        message_id=mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED,
+        frequency_hz=20.0,
+    )
     return vehicle
 
 
@@ -203,6 +208,20 @@ def wait_command_ack(vehicle, command: int, timeout_s: float = 5.0):
             raise RuntimeError(f"MAVLink command {command} was rejected: {label}")
         return ack
     raise TimeoutError(f"Timed out waiting for COMMAND_ACK command={command}")
+
+
+def request_message_interval(vehicle, message_id: int, frequency_hz: float) -> None:
+    if frequency_hz <= 0.0:
+        raise ValueError("frequency_hz must be positive")
+
+    interval_us = int(round(1_000_000.0 / frequency_hz))
+    command_long(
+        vehicle,
+        mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
+        float(message_id),
+        float(interval_us),
+    )
+    wait_command_ack(vehicle, mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL)
 
 
 def _message_param_id(message) -> str:

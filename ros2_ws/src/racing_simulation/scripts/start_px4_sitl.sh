@@ -112,6 +112,13 @@ if [[ ! -d "$px4_dir" ]]; then
   exit 2
 fi
 
+if [[ -z "$server_config" ]]; then
+  px4_server_config="$px4_dir/Tools/simulation/gz/server.config"
+  if [[ -f "$px4_server_config" ]]; then
+    server_config="$px4_server_config"
+  fi
+fi
+
 if [[ -n "$server_config" ]]; then
   [[ -f "$server_config" ]] || {
     printf 'Gazebo server config does not exist: %s\n' "$server_config" >&2
