@@ -14,6 +14,7 @@ Options:
   --pose CSV          Spawn pose x,y,z,roll,pitch,yaw.
   --models-dir PATH   Additional project-owned Gazebo model directory.
   --worlds-dir PATH   Additional project-owned Gazebo world directory.
+  --server-config PATH Project-owned Gazebo server plugin configuration.
   --headless          Start Gazebo without its GUI.
   --dry-run           Print the resolved environment and command only.
   -h, --help          Show this help text.
@@ -26,6 +27,7 @@ world="${PX4_GZ_WORLD:-default}"
 pose="${PX4_GZ_MODEL_POSE:-0,0,0,0,0,0}"
 models_dir="${RACING_GZ_MODELS_DIR:-}"
 worlds_dir="${RACING_GZ_WORLDS_DIR:-}"
+server_config="${GZ_SIM_SERVER_CONFIG_PATH:-}"
 case "${RACING_HEADLESS:-false}" in
   1|true|TRUE|yes|YES)
     headless=1
@@ -66,6 +68,10 @@ while (($#)); do
       worlds_dir="$2"
       shift 2
       ;;
+    --server-config)
+      server_config="$2"
+      shift 2
+      ;;
     --headless)
       headless=1
       shift
@@ -104,6 +110,14 @@ fi
 if [[ ! -d "$px4_dir" ]]; then
   printf 'PX4 checkout does not exist: %s\n' "$px4_dir" >&2
   exit 2
+fi
+
+if [[ -n "$server_config" ]]; then
+  [[ -f "$server_config" ]] || {
+    printf 'Gazebo server config does not exist: %s\n' "$server_config" >&2
+    exit 2
+  }
+  export GZ_SIM_SERVER_CONFIG_PATH="$server_config"
 fi
 
 resource_paths=()
@@ -156,6 +170,7 @@ if ((dry_run)); then
   printf 'PX4_GZ_MODEL_POSE=%s\n' "$PX4_GZ_MODEL_POSE"
   printf 'GZ_SIM_RESOURCE_PATH=%s\n' "${GZ_SIM_RESOURCE_PATH:-}"
   printf 'GZ_IP=%s\n' "$GZ_IP"
+  printf 'GZ_SIM_SERVER_CONFIG_PATH=%s\n' "${GZ_SIM_SERVER_CONFIG_PATH:-}"
   if [[ -n "$project_world" ]]; then
     printf 'PROJECT_GZ_WORLD=%s\n' "$project_world"
     if ((headless)); then
