@@ -3,7 +3,7 @@ project(racing_description)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY launch urdf DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch urdf meshes config DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
