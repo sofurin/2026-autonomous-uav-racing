@@ -77,6 +77,20 @@ def test_starts_a_project_owned_world_before_px4_standalone(tmp_path: Path) -> N
     assert 'gz sim "${gz_args[@]}" </dev/null &' in source
 
 
+def test_exports_the_project_gazebo_server_config(tmp_path: Path) -> None:
+    server_config = tmp_path / "gazebo_server.config"
+    server_config.write_text("<server_config/>", encoding="utf-8")
+
+    result = run_script(
+        tmp_path,
+        "--server-config",
+        str(server_config),
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert f"GZ_SIM_SERVER_CONFIG_PATH={server_config}" in result.stdout
+
+
 def test_rejects_a_model_name_that_could_be_interpreted_as_shell_code(
     tmp_path: Path,
 ) -> None:

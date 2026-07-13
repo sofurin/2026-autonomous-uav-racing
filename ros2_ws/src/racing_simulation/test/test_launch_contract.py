@@ -60,3 +60,21 @@ def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> N
     assert "/camera/depth/image_raw" in d435
     assert "/camera/infra1/image_raw" in d435
     assert "/camera/infra2/image_raw" in d435
+
+
+def test_gazebo_server_config_enables_rendering_sensors() -> None:
+    server_config = (
+        PACKAGE_ROOT / "config" / "gazebo_server.config"
+    ).read_text(encoding="utf-8")
+
+    for system in ("Physics", "UserCommands", "SceneBroadcaster", "Sensors"):
+        assert f"gz::sim::systems::{system}" in server_config
+
+    assert "gz-sim-sensors-system" in server_config
+    assert "<render_engine>ogre2</render_engine>" in server_config
+
+    launch_source = (PACKAGE_ROOT / "launch" / "sitl.launch.py").read_text(
+        encoding="utf-8"
+    )
+    assert '"--server-config"' in launch_source
+    assert 'package_share / "config" / "gazebo_server.config"' in launch_source
