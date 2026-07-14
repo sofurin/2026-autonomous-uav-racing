@@ -7,6 +7,14 @@ three kinds of data that have different maturity:
 - `config/geometry.yaml`: CAD-derived geometry in ROS FLU coordinates.
 - `model.sdf`: Gazebo links, primitive collisions, sensors and a temporary
   PX4 x500 dynamics baseline.
+- `model://realsense_d435_sensor`: a merged 72 g virtual D435 sensor suite
+  fixed to `base_link`, without duplicate visual or collision geometry.
+
+The exported team CAD mesh already contains the D435 body. Its SolidWorks
+component frame was transformed from `UAV_SIM_ORIGIN` to ROS FLU as
+`-0.0085553439 -0.0652616422 0.0549360600 m`. Keep the SDF, `geometry.yaml`
+and `racing_description/urdf/racing_uav.urdf.xacro` values synchronized when
+measured optical extrinsics replace this component-origin approximation.
 
 The project owns the PX4 `4022_gz_team_racer` airframe definition in
 `config/4022_gz_team_racer`. Install it into an external PX4 checkout with:

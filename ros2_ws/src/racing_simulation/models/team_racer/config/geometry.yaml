@@ -51,6 +51,17 @@ propeller:
   adjacent_tip_clearance_m: 0.0466253953
   collision_enabled: false
 
+camera_mount:
+  model: realsense_d435_sensor
+  parent_frame: base_link
+  frame_convention: ROS FLU
+  xyz_flu_m: [-0.0085553439, -0.0652616422, 0.0549360600]
+  rpy_rad: [0.0, 0.0, 0.0]
+  status: cad_component_frame
+  source_component: "24Intel_RealSense_Depth_Camera_D435-1"
+  source_origin: UAV_SIM_ORIGIN
+  optical_calibration_note: "Replace the component-origin approximation with measured optical extrinsics when available"
+
 collision:
   strategy: primitive_only
   central_box:

@@ -16,6 +16,18 @@ def test_racing_uav_xacro_generates_expected_frame_tree():
     assert 'link name="camera_link"' in generated_xml
     assert 'link name="camera_optical_frame"' in generated_xml
 
+    camera_joint = next(
+        joint
+        for joint in document.getElementsByTagName("joint")
+        if joint.getAttribute("name") == "base_to_camera"
+    )
+    camera_origin = camera_joint.getElementsByTagName("origin")[0]
+    assert (
+        camera_origin.getAttribute("xyz")
+        == "-0.0085553439 -0.0652616422 0.0549360600"
+    )
+    assert camera_origin.getAttribute("rpy") == "0 0 0"
+
 
 def test_team_airframe_visual_mesh_is_part_of_the_description():
     model = PACKAGE_ROOT / "urdf" / "racing_uav.urdf.xacro"

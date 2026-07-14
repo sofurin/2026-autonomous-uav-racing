@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <model name="realsense_d435_sensor">
+    <self_collide>false</self_collide>
+    <static>false</static>
+    <link name="camera_link">
+      <!-- The team CAD mesh already owns the camera appearance. This link
+           carries only D435 mass and virtual sensors, so there is no visual
+           or collision geometry to overlap the exported aircraft mesh. -->
+      <inertial>
+        <mass>0.072</mass>
+        <inertia>
+          <!-- 72 g box approximation for 25.05 x 90 x 25 mm. -->
+          <ixx>0.000052350000</ixx>
+          <iyy>0.000007515015</iyy>
+          <izz>0.000052365015</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+
+      <sensor name="color_rgb" type="camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <topic>/camera/color/image_raw</topic>
+        <camera_info_topic>/camera/color/camera_info</camera_info_topic>
+        <pose>0 0.015 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.211</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>R8G8B8</format></image>
+          <clip><near>0.15</near><far>65.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="depth_stereo" type="depth_camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <topic>/camera/depth/image_raw</topic>
+        <camera_info_topic>/camera/depth/camera_info</camera_info_topic>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>R_FLOAT32</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="infra_left" type="camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <topic>/camera/infra1/image_raw</topic>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>L8</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+
+      <sensor name="infra_right" type="camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <topic>/camera/infra2/image_raw</topic>
+        <pose>0 -0.050 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.518</horizontal_fov>
+          <image><width>1280</width><height>720</height><format>L8</format></image>
+          <clip><near>0.28</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+    </link>
+  </model>
+</sdf>

@@ -115,6 +115,63 @@ def test_px4_health_sensors_have_nonzero_noise_to_avoid_stale_data():
         assert float(value) > 0.0, path
 
 
+def test_sensor_only_d435_is_fixed_at_the_cad_component_pose():
+    model = _model_root()
+    camera_include = next(
+        include
+        for include in model.findall("include")
+        if include.findtext("uri") == "model://realsense_d435_sensor"
+    )
+    assert camera_include.attrib.get("merge") == "true"
+    expected_pose = "-0.0085553439 -0.0652616422 0.0549360600 0 0 0"
+    assert camera_include.findtext("pose") == expected_pose
+
+    camera_joint = model.find("./joint[@name='camera_joint']")
+    assert camera_joint is not None
+    assert camera_joint.attrib["type"] == "fixed"
+    assert camera_joint.findtext("parent") == "base_link"
+    assert camera_joint.findtext("child") == "camera_link"
+    assert camera_joint.findtext("pose") == expected_pose
+
+    sensor_sdf = MODEL_DIR.parent / "realsense_d435_sensor" / "model.sdf"
+    sensor_model = ET.parse(sensor_sdf).getroot().find("model")
+    assert sensor_model is not None
+    assert sensor_model.find("./link[@name='camera_link']/visual") is None
+    assert sensor_model.find("./link[@name='camera_link']/collision") is None
+    assert math.isclose(
+        float(sensor_model.findtext("./link[@name='camera_link']/inertial/mass")),
+        0.072,
+    )
+    inertia = sensor_model.find("./link[@name='camera_link']/inertial/inertia")
+    assert inertia is not None
+    assert {child.tag for child in inertia} == {
+        "ixx",
+        "iyy",
+        "izz",
+        "ixy",
+        "ixz",
+        "iyz",
+    }
+    diagonal = [float(inertia.findtext(axis)) for axis in ("ixx", "iyy", "izz")]
+    assert all(value > 0.0 for value in diagonal)
+    assert diagonal[0] + diagonal[1] >= diagonal[2]
+    assert diagonal[0] + diagonal[2] >= diagonal[1]
+    assert diagonal[1] + diagonal[2] >= diagonal[0]
+
+    topics = {
+        topic.text
+        for topic in sensor_model.findall("./link[@name='camera_link']/sensor/topic")
+    }
+    assert "/camera/color/image_raw" in topics
+    assert "/camera/depth/image_raw" in topics
+    assert "/camera/infra1/image_raw" in topics
+    assert "/camera/infra2/image_raw" in topics
+
+    sensors = sensor_model.findall("./link[@name='camera_link']/sensor")
+    assert len(sensors) == 4
+    assert {sensor.findtext("gz_frame_id") for sensor in sensors} == {"camera_link"}
+
+
 def test_geometry_contract_matches_the_cad_measurements():
     geometry = yaml.safe_load((MODEL_DIR / "config" / "geometry.yaml").read_text())
     assert geometry["frame_convention"] == "ROS FLU"
@@ -138,6 +195,17 @@ def test_geometry_contract_matches_the_cad_measurements():
     motors = geometry["motor_geometry"]["motors"]
     assert [motor["id"] for motor in motors] == [0, 1, 2, 3]
     assert [motor["direction"] for motor in motors] == ["ccw", "ccw", "cw", "cw"]
+
+    camera_mount = geometry["camera_mount"]
+    assert camera_mount["model"] == "realsense_d435_sensor"
+    assert camera_mount["parent_frame"] == "base_link"
+    assert camera_mount["xyz_flu_m"] == [
+        -0.0085553439,
+        -0.0652616422,
+        0.05493606,
+    ]
+    assert camera_mount["rpy_rad"] == [0.0, 0.0, 0.0]
+    assert camera_mount["status"] == "cad_component_frame"
 
 
 def test_unmeasured_dynamics_are_labelled_as_a_temporary_baseline():
