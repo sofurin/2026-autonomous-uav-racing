@@ -77,6 +77,23 @@ def test_quad_x_motor_numbering_and_directions_are_explicit():
     ]
 
 
+def test_px4_gz_bridge_sensor_names_match_the_x500_contract():
+    model = _model_root()
+    base_link = model.find("./link[@name='base_link']")
+    assert base_link is not None
+
+    sensors = {
+        sensor.attrib["name"]: sensor.attrib["type"]
+        for sensor in base_link.findall("sensor")
+    }
+    assert sensors["imu_sensor"] == "imu"
+    assert sensors["air_pressure_sensor"] == "air_pressure"
+    assert sensors["magnetometer_sensor"] == "magnetometer"
+    assert sensors["navsat_sensor"] == "navsat"
+
+    assert not model.findall("./link[@name='imu_link']/sensor")
+
+
 def test_geometry_contract_matches_the_cad_measurements():
     geometry = yaml.safe_load((MODEL_DIR / "config" / "geometry.yaml").read_text())
     assert geometry["frame_convention"] == "ROS FLU"
