@@ -94,6 +94,27 @@ def test_px4_gz_bridge_sensor_names_match_the_x500_contract():
     assert not model.findall("./link[@name='imu_link']/sensor")
 
 
+def test_px4_health_sensors_have_nonzero_noise_to_avoid_stale_data():
+    model = _model_root()
+    noise_paths = [
+        "./link[@name='base_link']/sensor[@name='air_pressure_sensor']/air_pressure/pressure/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='magnetometer_sensor']/magnetometer/x/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='magnetometer_sensor']/magnetometer/y/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='magnetometer_sensor']/magnetometer/z/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/angular_velocity/x/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/angular_velocity/y/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/angular_velocity/z/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/linear_acceleration/x/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/linear_acceleration/y/noise/stddev",
+        "./link[@name='base_link']/sensor[@name='imu_sensor']/imu/linear_acceleration/z/noise/stddev",
+    ]
+
+    for path in noise_paths:
+        value = model.findtext(path)
+        assert value is not None, path
+        assert float(value) > 0.0, path
+
+
 def test_geometry_contract_matches_the_cad_measurements():
     geometry = yaml.safe_load((MODEL_DIR / "config" / "geometry.yaml").read_text())
     assert geometry["frame_convention"] == "ROS FLU"
