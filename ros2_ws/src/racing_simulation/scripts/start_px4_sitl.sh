@@ -9,7 +9,7 @@ Start PX4 SITL with a configurable Gazebo model and world.
 
 Options:
   --px4-dir PATH      PX4-Autopilot checkout.
-  --model TARGET      PX4 Gazebo target (default: gz_x500_depth).
+  --model TARGET      PX4 Gazebo target (default: gz_team_racer).
   --world NAME        Gazebo world name (default: default).
   --pose CSV          Spawn pose x,y,z,roll,pitch,yaw.
   --models-dir PATH   Additional project-owned Gazebo model directory.
@@ -22,7 +22,7 @@ EOF
 }
 
 px4_dir="${PX4_AUTOPILOT_DIR:-/root/docker_ws/uav_test/src/PX4-Autopilot}"
-model="${PX4_SIM_MODEL:-gz_x500_depth}"
+model="${PX4_SIM_MODEL:-gz_team_racer}"
 world="${PX4_GZ_WORLD:-default}"
 pose="${PX4_GZ_MODEL_POSE:-0,0,0,0,0,0}"
 models_dir="${RACING_GZ_MODELS_DIR:-}"

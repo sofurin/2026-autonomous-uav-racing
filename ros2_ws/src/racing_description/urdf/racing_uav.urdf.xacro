@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="racing_uav">
-  <!-- Current x500_depth simulation pose; override after measuring the real mount. -->
-  <xacro:arg name="camera_xyz" default="0.12 0.02 0.252"/>
+  <!-- CAD D435 component frame; refine with measured optical extrinsics. -->
+  <xacro:arg name="camera_xyz" default="-0.0085553439 -0.0652616422 0.0549360600"/>
   <xacro:arg name="camera_rpy" default="0 0 0"/>
 
   <!-- The detailed CAD mesh is visualization-only. Flight dynamics remain PX4-owned. -->

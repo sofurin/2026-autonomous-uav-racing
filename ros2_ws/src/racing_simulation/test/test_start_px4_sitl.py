@@ -36,18 +36,18 @@ def run_script(tmp_path: Path, *arguments: str) -> subprocess.CompletedProcess[s
     )
 
 
-def test_defaults_to_the_current_x500_depth_baseline(tmp_path: Path) -> None:
+def test_defaults_to_the_validated_team_racer_model(tmp_path: Path) -> None:
     result = run_script(tmp_path)
 
     assert result.returncode == 0, result.stderr
-    assert "PX4_SIM_MODEL=gz_x500_depth" in result.stdout
+    assert "PX4_SIM_MODEL=gz_team_racer" in result.stdout
     assert "PX4_GZ_WORLD=default" in result.stdout
     assert (
         f"GZ_SIM_SERVER_CONFIG_PATH="
         f"{tmp_path / 'PX4-Autopilot' / 'Tools/simulation/gz/server.config'}"
         in result.stdout
     )
-    assert "make px4_sitl gz_x500_depth" in result.stdout
+    assert "make px4_sitl gz_team_racer" in result.stdout
 
 
 def test_accepts_a_future_team_model_without_changing_the_script(tmp_path: Path) -> None:

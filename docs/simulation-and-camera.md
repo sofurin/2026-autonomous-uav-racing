@@ -86,8 +86,14 @@ It does not fork the perception or planning implementation into separate simulat
 ```bash
 ros2 launch racing_bringup bringup.launch.py \
   mode:=simulation \
-  px4_model:=gz_x500_depth
+  px4_model:=gz_team_racer
 ```
+
+`gz_team_racer` already contains the D435 appearance in its exported CAD mesh,
+so it merges the project-owned sensor-only `realsense_d435_sensor` model and
+fixes that to `base_link` at the CAD component pose. This avoids a duplicate
+camera shell while preserving D435 mass and streams. Measured optical
+extrinsics can replace the CAD component-origin approximation later.
 
 Set `px4_model` and `px4_world` to move to a PX4-registered team model. Project-owned model and world resources are supplied through `GZ_SIM_RESOURCE_PATH`; the integration details remain confined to `racing_simulation`.
 

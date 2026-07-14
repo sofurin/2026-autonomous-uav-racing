@@ -1,0 +1,89 @@
+schema_version: 1
+model: team_racer
+layout: Quad-X
+frame_convention: ROS FLU
+source:
+  assembly: "26无人机/24装配体2.SLDASM"
+  origin_feature: UAV_SIM_ORIGIN
+  exported_mesh_axis_mapping: "SolidWorks [x, y, z] -> ROS FLU [z, x, y]"
+
+dimensions_m:
+  length_x: 0.3040365875
+  width_y: 0.2867687643
+  height_z: 0.1350000054
+
+mesh_bounds_flu_m:
+  min: [-0.15909086, -0.12958744, -0.06756394]
+  max: [0.14494573, 0.15718132, 0.06743606]
+  center: [-0.0070725679, 0.0137969405, -0.0000639409]
+  base_link_height_for_ground_contact: 0.06756394
+
+motor_geometry:
+  diagonal_axis_distance_m: 0.25
+  adjacent_axis_distance_m: 0.1767766953
+  numbering_note: "PX4 x500 motor ordering retained; positions are ROS FLU"
+  motors:
+    - id: 0
+      location: front_right
+      cad_component: "242006（手搓）-4"
+      xyz_flu_m: [0.0821160896, -0.0836499899, -0.0035639400]
+      direction: ccw
+    - id: 1
+      location: rear_left
+      cad_component: "242006（手搓）-1"
+      xyz_flu_m: [-0.0946606057, 0.0931267054, -0.0035639400]
+      direction: ccw
+    - id: 2
+      location: front_left
+      cad_component: "242006（手搓）-3"
+      xyz_flu_m: [0.0821160896, 0.0931267054, -0.0035639400]
+      direction: cw
+    - id: 3
+      location: rear_right
+      cad_component: "242006（手搓）-2"
+      xyz_flu_m: [-0.0946606057, -0.0836499899, -0.0035639400]
+      direction: cw
+
+propeller:
+  diameter_m: 0.1301513
+  radius_m: 0.06507565
+  plane_z_flu_m: -0.02486394
+  adjacent_tip_clearance_m: 0.0466253953
+  collision_enabled: false
+
+camera_mount:
+  model: realsense_d435_sensor
+  parent_frame: base_link
+  frame_convention: ROS FLU
+  xyz_flu_m: [-0.0085553439, -0.0652616422, 0.0549360600]
+  rpy_rad: [0.0, 0.0, 0.0]
+  status: cad_component_frame
+  source_component: "24Intel_RealSense_Depth_Camera_D435-1"
+  source_origin: UAV_SIM_ORIGIN
+  optical_calibration_note: "Replace the component-origin approximation with measured optical extrinsics when available"
+
+collision:
+  strategy: primitive_only
+  central_box:
+    size_m: [0.13, 0.12, 0.13]
+    pose_flu_m: [-0.0070725679, 0.0137969405, -0.0000639409]
+  diagonal_arms:
+    count: 2
+    length_m: 0.25
+    width_m: 0.025
+    height_m: 0.015
+    center_flu_m: [-0.0062722581, 0.0047383578, -0.01]
+    yaw_rad: [-0.7853981634, 0.7853981634]
+  motor_hub:
+    radius_m: 0.015
+    height_m: 0.03
+
+dynamics:
+  status: temporary_baseline
+  source: PX4 gz_x500
+  flight_truth: false
+  replace_after_measurement:
+    - total_mass_and_center_of_mass
+    - inertia_tensor
+    - thrust_and_moment_coefficients
+    - motor_time_constants_and_max_velocity

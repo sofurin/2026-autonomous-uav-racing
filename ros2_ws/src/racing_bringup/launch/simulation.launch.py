@@ -21,6 +21,8 @@ def generate_launch_description():
             "start_px4",
             "start_xrce_agent",
             "start_camera_bridge",
+            "start_depth_bridge",
+            "start_infrared_bridge",
             "headless",
             "xrce_agent_port",
             "color_topic",
@@ -35,7 +37,7 @@ def generate_launch_description():
                 "px4_dir",
                 default_value="/root/docker_ws/uav_test/src/PX4-Autopilot",
             ),
-            DeclareLaunchArgument("px4_model", default_value="gz_x500_depth"),
+            DeclareLaunchArgument("px4_model", default_value="gz_team_racer"),
             DeclareLaunchArgument("px4_world", default_value="default"),
             DeclareLaunchArgument(
                 "px4_model_pose", default_value="0,0,0,0,0,0"
@@ -43,6 +45,8 @@ def generate_launch_description():
             DeclareLaunchArgument("start_px4", default_value="true"),
             DeclareLaunchArgument("start_xrce_agent", default_value="true"),
             DeclareLaunchArgument("start_camera_bridge", default_value="true"),
+            DeclareLaunchArgument("start_depth_bridge", default_value="false"),
+            DeclareLaunchArgument("start_infrared_bridge", default_value="false"),
             DeclareLaunchArgument("headless", default_value="false"),
             DeclareLaunchArgument("xrce_agent_port", default_value="8888"),
             DeclareLaunchArgument(
@@ -52,7 +56,8 @@ def generate_launch_description():
                 "depth_topic", default_value="/camera/depth/image_raw"
             ),
             DeclareLaunchArgument(
-                "gz_point_cloud_topic", default_value="/depth_camera/points"
+                "gz_point_cloud_topic",
+                default_value="/camera/depth/image_raw/points",
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(

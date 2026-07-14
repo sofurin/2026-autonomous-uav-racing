@@ -12,7 +12,7 @@
 - 飞控栈：PX4 `release/1.17`
 - ROS 2 与 PX4 接口：`px4_msgs` + Micro XRCE-DDS Agent
 - 相机：比赛相机型号和驱动尚未确定，不把 NUC 上遗留的 Astra 工作区作为方案基线
-- 仿真载具：当前使用旧 PX4 工作树中的 `gz_x500_depth`；模型选择由 launch 参数控制
+- 仿真载具：默认使用项目自有的 `gz_team_racer`；`gz_x500_depth` 仍可通过 launch 参数选择
 
 ## 目标数据链路
 
@@ -66,7 +66,7 @@ ros2_ws/src/
 
 以上 6 个包已经有可构建的 ROS 2 骨架。仿真进程与 PX4 DDS 传输已经接通；感知算法、Offboard 控制和真机链路仍未实现。
 
-`mode:=simulation` 已能编排外部 PX4 SITL、Micro XRCE-DDS Agent 和 Gazebo 相机桥。默认模型是 `gz_x500_depth`，旧 PX4 工作树仍作为外部依赖。具体启动方式和当前迁移边界见 [`docs/nuc-integration.md`](docs/nuc-integration.md)。
+`mode:=simulation` 已能编排外部 PX4 SITL、Micro XRCE-DDS Agent 和 Gazebo 相机桥。默认模型是项目自有的 `gz_team_racer`，外部 PX4 工作树仍作为依赖；首次使用需要运行 `racing_simulation/scripts/install_team_racer_px4.sh` 注册 airframe。具体启动方式和当前迁移边界见 [`docs/nuc-integration.md`](docs/nuc-integration.md)。
 
 `racing_localization`、`racing_planning` 和自定义消息包将在出现对应节点或消息定义时再创建，避免长期保留没有代码的空包。录包回放与跨包集成测试放在仓库级 `tests/`，无需单独建立 ROS 2 包。
 

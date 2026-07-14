@@ -4,7 +4,12 @@ project(racing_simulation)
 find_package(ament_cmake REQUIRED)
 
 install(DIRECTORY config launch models tools worlds DESTINATION share/${PROJECT_NAME})
-install(PROGRAMS scripts/start_px4_sitl.sh DESTINATION share/${PROJECT_NAME}/scripts)
+install(
+  PROGRAMS
+    scripts/install_team_racer_px4.sh
+    scripts/start_px4_sitl.sh
+  DESTINATION share/${PROJECT_NAME}/scripts
+)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
@@ -16,6 +21,21 @@ if(BUILD_TESTING)
   ament_add_pytest_test(
     test_launch_contract
     test/test_launch_contract.py
+    TIMEOUT 30
+  )
+  ament_add_pytest_test(
+    test_team_racer_model
+    test/test_team_racer_model.py
+    TIMEOUT 30
+  )
+  ament_add_pytest_test(
+    test_install_team_racer_px4
+    test/test_install_team_racer_px4.py
+    TIMEOUT 30
+  )
+  ament_add_pytest_test(
+    test_world_contract
+    test/test_world_contract.py
     TIMEOUT 30
   )
   ament_add_pytest_test(

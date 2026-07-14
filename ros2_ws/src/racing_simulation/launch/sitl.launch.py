@@ -19,6 +19,8 @@ def generate_launch_description():
     start_px4 = LaunchConfiguration("start_px4")
     start_xrce_agent = LaunchConfiguration("start_xrce_agent")
     start_camera_bridge = LaunchConfiguration("start_camera_bridge")
+    start_depth_bridge = LaunchConfiguration("start_depth_bridge")
+    start_infrared_bridge = LaunchConfiguration("start_infrared_bridge")
     headless = LaunchConfiguration("headless")
     xrce_agent_port = LaunchConfiguration("xrce_agent_port")
     color_topic = LaunchConfiguration("color_topic")
@@ -59,16 +61,27 @@ def generate_launch_description():
         emulate_tty=True,
     )
 
-    camera_bridge = Node(
+    color_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
-        name="racing_camera_bridge",
+        name="racing_color_bridge",
         arguments=[
             [color_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
             [
                 color_camera_info_topic,
                 "@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
             ],
+        ],
+        condition=IfCondition(start_camera_bridge),
+        additional_env={"GZ_IP": "127.0.0.1"},
+        output="screen",
+    )
+
+    depth_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        name="racing_depth_bridge",
+        arguments=[
             [depth_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
             [
                 depth_camera_info_topic,
@@ -78,11 +91,22 @@ def generate_launch_description():
                 gz_point_cloud_topic,
                 "@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
             ],
+        ],
+        condition=IfCondition(start_depth_bridge),
+        remappings=[(gz_point_cloud_topic, point_cloud_topic)],
+        additional_env={"GZ_IP": "127.0.0.1"},
+        output="screen",
+    )
+
+    infrared_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        name="racing_infrared_bridge",
+        arguments=[
             [infra1_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
             [infra2_topic, "@sensor_msgs/msg/Image[gz.msgs.Image"],
         ],
-        condition=IfCondition(start_camera_bridge),
-        remappings=[(gz_point_cloud_topic, point_cloud_topic)],
+        condition=IfCondition(start_infrared_bridge),
         additional_env={"GZ_IP": "127.0.0.1"},
         output="screen",
     )
@@ -99,8 +123,8 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "px4_model",
-                default_value="gz_x500_depth",
-                description="PX4 Gazebo model target; replace for the team airframe.",
+                default_value="gz_team_racer",
+                description="PX4 Gazebo model target; gz_x500_depth remains selectable.",
             ),
             DeclareLaunchArgument("px4_world", default_value="default"),
             DeclareLaunchArgument(
@@ -109,6 +133,8 @@ def generate_launch_description():
             DeclareLaunchArgument("start_px4", default_value="true"),
             DeclareLaunchArgument("start_xrce_agent", default_value="true"),
             DeclareLaunchArgument("start_camera_bridge", default_value="true"),
+            DeclareLaunchArgument("start_depth_bridge", default_value="false"),
+            DeclareLaunchArgument("start_infrared_bridge", default_value="false"),
             DeclareLaunchArgument("headless", default_value="false"),
             DeclareLaunchArgument("xrce_agent_port", default_value="8888"),
             DeclareLaunchArgument(
@@ -127,8 +153,8 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "gz_point_cloud_topic",
-                default_value="/depth_camera/points",
-                description="Gazebo point-cloud source published by gz_x500_depth.",
+                default_value="/camera/depth/image_raw/points",
+                description="Gazebo point-cloud source published by the D435 depth sensor.",
             ),
             DeclareLaunchArgument(
                 "point_cloud_topic",
@@ -144,6 +170,8 @@ def generate_launch_description():
             LogInfo(msg=["PX4 SITL model: ", px4_model, ", world: ", px4_world]),
             px4,
             xrce_agent,
-            camera_bridge,
+            color_bridge,
+            depth_bridge,
+            infrared_bridge,
         ]
     )
