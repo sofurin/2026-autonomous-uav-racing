@@ -17,6 +17,8 @@ def test_sitl_launch_exposes_replaceable_model_and_process_switches() -> None:
         "start_px4",
         "start_xrce_agent",
         "start_camera_bridge",
+        "start_depth_bridge",
+        "start_infrared_bridge",
     ):
         assert f'"{argument}"' in source
 
@@ -24,6 +26,9 @@ def test_sitl_launch_exposes_replaceable_model_and_process_switches() -> None:
     assert "start_px4_sitl.sh" in source
     assert "MicroXRCEAgent" in source
     assert "ros_gz_bridge" in source
+    assert 'name="racing_color_bridge"' in source
+    assert 'name="racing_depth_bridge"' in source
+    assert 'name="racing_infrared_bridge"' in source
     assert "8888" in source
 
 
@@ -74,6 +79,11 @@ def test_gazebo_depth_point_cloud_source_is_remapped_to_the_camera_contract() ->
         source,
         re.DOTALL,
     )
+    assert 'DeclareLaunchArgument("start_depth_bridge", default_value="false")' in source
+    assert (
+        'DeclareLaunchArgument("start_infrared_bridge", default_value="false")'
+        in source
+    )
     assert "(gz_point_cloud_topic, point_cloud_topic)" in source
 
     bringup_source = (
@@ -85,6 +95,8 @@ def test_gazebo_depth_point_cloud_source_is_remapped_to_the_camera_contract() ->
         bringup_source,
         re.DOTALL,
     )
+    assert '"start_depth_bridge"' in bringup_source
+    assert '"start_infrared_bridge"' in bringup_source
 
 
 def test_sitl_uses_the_px4_owned_gazebo_server_config() -> None:

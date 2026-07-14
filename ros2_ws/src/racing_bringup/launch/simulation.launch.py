@@ -21,6 +21,8 @@ def generate_launch_description():
             "start_px4",
             "start_xrce_agent",
             "start_camera_bridge",
+            "start_depth_bridge",
+            "start_infrared_bridge",
             "headless",
             "xrce_agent_port",
             "color_topic",
@@ -43,6 +45,8 @@ def generate_launch_description():
             DeclareLaunchArgument("start_px4", default_value="true"),
             DeclareLaunchArgument("start_xrce_agent", default_value="true"),
             DeclareLaunchArgument("start_camera_bridge", default_value="true"),
+            DeclareLaunchArgument("start_depth_bridge", default_value="false"),
+            DeclareLaunchArgument("start_infrared_bridge", default_value="false"),
             DeclareLaunchArgument("headless", default_value="false"),
             DeclareLaunchArgument("xrce_agent_port", default_value="8888"),
             DeclareLaunchArgument(

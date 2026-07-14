@@ -22,6 +22,10 @@ infrared streams are 424x240 at 10 Hz. All streams remain available; the lower
 rates avoid the severe real-time-factor collapse caused by four
 1280x720-at-30-Hz render sensors.
 
+For the flight-plus-GUI demo, only the color bridge is enabled by default.
+Depth/point-cloud and infrared sensors remain in the model and can be enabled
+with `start_depth_bridge:=true` and `start_infrared_bridge:=true` when needed.
+
 The project owns the PX4 `4022_gz_team_racer` airframe definition in
 `config/4022_gz_team_racer`. Install it into an external PX4 checkout with:
 

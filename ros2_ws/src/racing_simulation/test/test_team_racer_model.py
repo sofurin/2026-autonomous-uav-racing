@@ -185,6 +185,11 @@ def test_sensor_only_d435_is_fixed_at_the_cad_component_pose():
         assert int(sensor.findtext("camera/image/height")) == height
         assert sensor.findtext("visualize") == "false"
 
+    assert by_name["color_rgb"].findtext("always_on") == "true"
+    assert by_name["depth_stereo"].findtext("always_on") == "false"
+    assert by_name["infra_left"].findtext("always_on") == "false"
+    assert by_name["infra_right"].findtext("always_on") == "false"
+
 
 def test_geometry_contract_matches_the_cad_measurements():
     geometry = yaml.safe_load((MODEL_DIR / "config" / "geometry.yaml").read_text())
