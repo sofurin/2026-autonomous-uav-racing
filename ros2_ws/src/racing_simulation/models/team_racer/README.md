@@ -16,6 +16,12 @@ component frame was transformed from `UAV_SIM_ORIGIN` to ROS FLU as
 and `racing_description/urdf/racing_uav.urdf.xacro` values synchronized when
 measured optical extrinsics replace this component-origin approximation.
 
+The sensor-only model intentionally uses a real-time development profile:
+color is 640x360 at 15 Hz, depth/point cloud is 424x240 at 15 Hz, and both
+infrared streams are 424x240 at 10 Hz. All streams remain available; the lower
+rates avoid the severe real-time-factor collapse caused by four
+1280x720-at-30-Hz render sensors.
+
 The project owns the PX4 `4022_gz_team_racer` airframe definition in
 `config/4022_gz_team_racer`. Install it into an external PX4 checkout with:
 

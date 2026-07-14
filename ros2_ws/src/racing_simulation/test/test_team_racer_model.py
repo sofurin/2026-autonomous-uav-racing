@@ -171,6 +171,20 @@ def test_sensor_only_d435_is_fixed_at_the_cad_component_pose():
     assert len(sensors) == 4
     assert {sensor.findtext("gz_frame_id") for sensor in sensors} == {"camera_link"}
 
+    by_name = {sensor.attrib["name"]: sensor for sensor in sensors}
+    expected_profiles = {
+        "color_rgb": (15.0, 640, 360),
+        "depth_stereo": (15.0, 424, 240),
+        "infra_left": (10.0, 424, 240),
+        "infra_right": (10.0, 424, 240),
+    }
+    for name, (rate, width, height) in expected_profiles.items():
+        sensor = by_name[name]
+        assert float(sensor.findtext("update_rate")) == rate
+        assert int(sensor.findtext("camera/image/width")) == width
+        assert int(sensor.findtext("camera/image/height")) == height
+        assert sensor.findtext("visualize") == "false"
+
 
 def test_geometry_contract_matches_the_cad_measurements():
     geometry = yaml.safe_load((MODEL_DIR / "config" / "geometry.yaml").read_text())
