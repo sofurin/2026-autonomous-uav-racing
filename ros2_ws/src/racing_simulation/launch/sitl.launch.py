@@ -127,8 +127,8 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "gz_point_cloud_topic",
-                default_value="/depth_camera/points",
-                description="Gazebo point-cloud source published by gz_x500_depth.",
+                default_value="/camera/depth/image_raw/points",
+                description="Gazebo point-cloud source published by the D435 depth sensor.",
             ),
             DeclareLaunchArgument(
                 "point_cloud_topic",

@@ -52,7 +52,8 @@ def generate_launch_description():
                 "depth_topic", default_value="/camera/depth/image_raw"
             ),
             DeclareLaunchArgument(
-                "gz_point_cloud_topic", default_value="/depth_camera/points"
+                "gz_point_cloud_topic",
+                default_value="/camera/depth/image_raw/points",
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
