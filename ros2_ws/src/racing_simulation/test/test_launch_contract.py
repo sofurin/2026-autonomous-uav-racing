@@ -43,6 +43,24 @@ def test_project_bringup_includes_the_simulation_orchestrator() -> None:
     assert 'DeclareLaunchArgument("px4_model", default_value="gz_team_racer")' in source
 
 
+def test_competition_gui_demo_uses_the_official_start_pose_and_color_viewer() -> None:
+    source = (
+        SRC_ROOT / "racing_bringup" / "launch" / "competition_demo.launch.py"
+    ).read_text(encoding="utf-8")
+
+    assert '"px4_model": "gz_team_racer"' in source
+    assert '"px4_world": "robocup_2025_baseline"' in source
+    assert '"px4_model_pose": "-4,-3.65,0,0,0,0"' in source
+    assert '"headless": "false"' in source
+    assert '"start_camera_bridge": "true"' in source
+    assert '"start_depth_bridge": "false"' in source
+    assert '"start_infrared_bridge": "false"' in source
+    assert '"rqt_image_view"' in source
+    assert '"/camera/color/image_raw"' in source
+    assert '"fly_known_course.py"' in source
+    assert '"MESA_D3D12_DEFAULT_ADAPTER_NAME", "NVIDIA"' in source
+
+
 def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> None:
     source = (PACKAGE_ROOT / "launch" / "sitl.launch.py").read_text(encoding="utf-8")
 
