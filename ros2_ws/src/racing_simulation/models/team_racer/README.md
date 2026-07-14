@@ -8,9 +8,15 @@ three kinds of data that have different maturity:
 - `model.sdf`: Gazebo links, primitive collisions, sensors and a temporary
   PX4 x500 dynamics baseline.
 
-The model is intentionally not registered as a PX4 `gz_team_racer` airframe
-yet. `config/px4_airframe.params` is the measured geometry input for that
-later integration; it is not automatically loaded by PX4.
+The project owns the PX4 `4022_gz_team_racer` airframe definition in
+`config/4022_gz_team_racer`. Install it into an external PX4 checkout with:
+
+```bash
+bash scripts/install_team_racer_px4.sh --px4-dir ~/PX4-Autopilot
+```
+
+`config/px4_airframe.params` remains a compact geometry reference. The SDF
+still uses temporary gz_x500 mass, inertia and propulsion coefficients.
 
 Do not replace primitive collision geometry with the high-resolution STL.
 Update the CAD mesh and `geometry.yaml` together, then run

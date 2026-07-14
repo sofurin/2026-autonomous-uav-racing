@@ -56,8 +56,8 @@ After stopping any manually started duplicate PX4, Agent and camera-bridge proce
 ```bash
 ros2 launch racing_bringup bringup.launch.py \
   mode:=simulation \
-  px4_model:=gz_x500_depth \
-  px4_world:=default
+  px4_model:=gz_team_racer \
+  px4_world:=racing_empty
 ```
 
 This launch owns four boundaries:
@@ -79,7 +79,14 @@ ros2 launch racing_bringup bringup.launch.py \
 
 ## Model replacement boundary
 
-The current model is selected by configuration rather than imported by perception or control code:
+The current model is selected by configuration rather than imported by perception or control code. Register the project airframe in the external PX4 checkout once before the first build:
+
+```bash
+bash ros2_ws/src/racing_simulation/scripts/install_team_racer_px4.sh \
+  --px4-dir /root/docker_ws/uav_test/src/PX4-Autopilot
+```
+
+Then select it normally:
 
 ```bash
 ros2 launch racing_bringup bringup.launch.py \

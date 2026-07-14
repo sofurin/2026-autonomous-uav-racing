@@ -99,8 +99,8 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "px4_model",
-                default_value="gz_x500_depth",
-                description="PX4 Gazebo model target; replace for the team airframe.",
+                default_value="gz_team_racer",
+                description="PX4 Gazebo model target; gz_x500_depth remains selectable.",
             ),
             DeclareLaunchArgument("px4_world", default_value="default"),
             DeclareLaunchArgument(

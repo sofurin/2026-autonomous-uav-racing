@@ -3,7 +3,7 @@ simulation:
     use_sim_time: true
     world: racing_empty
     px4_autopilot_dir: /root/docker_ws/uav_test/src/PX4-Autopilot
-    px4_model: gz_x500_depth
+    px4_model: gz_team_racer
     px4_model_pose: 0,0,0,0,0,0
     px4_transport: udp
     xrce_agent_port: 8888

@@ -9,7 +9,7 @@ The project-owned world is launched through the normal bringup entry point:
 ```bash
 ros2 launch racing_bringup bringup.launch.py \
   mode:=simulation \
-  px4_model:=gz_x500_depth \
+  px4_model:=gz_team_racer \
   px4_world:=robocup_2025_baseline \
   px4_model_pose:=-4,-3.65,0,0,0,0
 ```

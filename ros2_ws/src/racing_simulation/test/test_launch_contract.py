@@ -19,7 +19,7 @@ def test_sitl_launch_exposes_replaceable_model_and_process_switches() -> None:
     ):
         assert f'"{argument}"' in source
 
-    assert 'default_value="gz_x500_depth"' in source
+    assert 'default_value="gz_team_racer"' in source
     assert "start_px4_sitl.sh" in source
     assert "MicroXRCEAgent" in source
     assert "ros_gz_bridge" in source
@@ -34,6 +34,7 @@ def test_project_bringup_includes_the_simulation_orchestrator() -> None:
     assert 'get_package_share_directory("racing_simulation")' in source
     assert '"sitl.launch.py"' in source
     assert '"px4_model"' in source
+    assert 'DeclareLaunchArgument("px4_model", default_value="gz_team_racer")' in source
 
 
 def test_d435_bridge_contract_includes_metadata_depth_points_and_infrared() -> None:

@@ -35,7 +35,7 @@ def generate_launch_description():
                 "px4_dir",
                 default_value="/root/docker_ws/uav_test/src/PX4-Autopilot",
             ),
-            DeclareLaunchArgument("px4_model", default_value="gz_x500_depth"),
+            DeclareLaunchArgument("px4_model", default_value="gz_team_racer"),
             DeclareLaunchArgument("px4_world", default_value="default"),
             DeclareLaunchArgument(
                 "px4_model_pose", default_value="0,0,0,0,0,0"
