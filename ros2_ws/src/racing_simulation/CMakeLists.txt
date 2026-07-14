@@ -19,6 +19,11 @@ if(BUILD_TESTING)
     TIMEOUT 30
   )
   ament_add_pytest_test(
+    test_team_racer_model
+    test/test_team_racer_model.py
+    TIMEOUT 30
+  )
+  ament_add_pytest_test(
     test_robocup_2025_course
     tools/robocup_2025
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/robocup_2025

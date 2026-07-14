@@ -1,0 +1,26 @@
+# Geometry reference for a future PX4 4xxx_gz_team_racer airframe.
+# This file is not loaded automatically. Positions are PX4 FRD, converted from
+# the CAD-derived ROS FLU values in geometry.yaml. KM signs retain the current
+# x500 motor numbering/direction baseline.
+CA_AIRFRAME 0
+CA_ROTOR_COUNT 4
+
+CA_ROTOR0_PX 0.0821160896
+CA_ROTOR0_PY 0.0836499899
+CA_ROTOR0_PZ 0.0035639400
+CA_ROTOR0_KM 0.05
+
+CA_ROTOR1_PX -0.0946606057
+CA_ROTOR1_PY -0.0931267054
+CA_ROTOR1_PZ 0.0035639400
+CA_ROTOR1_KM 0.05
+
+CA_ROTOR2_PX 0.0821160896
+CA_ROTOR2_PY -0.0931267054
+CA_ROTOR2_PZ 0.0035639400
+CA_ROTOR2_KM -0.05
+
+CA_ROTOR3_PX -0.0946606057
+CA_ROTOR3_PY 0.0836499899
+CA_ROTOR3_PZ 0.0035639400
+CA_ROTOR3_KM -0.05
