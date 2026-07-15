@@ -32,8 +32,12 @@ done
   exit 2
 }
 
+# ROS 2 underlays may read optional variables before defining them, so source
+# them with nounset disabled and restore the script's strict mode afterwards.
+set +u
 source "$ros_setup"
 source "$px4_msgs_setup"
+set -u
 cd "$workspace"
 
 colcon build --symlink-install

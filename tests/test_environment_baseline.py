@@ -143,7 +143,7 @@ def test_environment_helper_starts_then_enters_the_selected_service(
     ]
 
 
-def test_workspace_helper_builds_and_tests_with_explicit_underlays(
+def test_workspace_helper_sources_underlays_without_nounset_then_builds_and_tests(
     tmp_path: Path,
 ) -> None:
     helper = REPOSITORY_ROOT / "scripts" / "build_workspace.sh"
@@ -159,7 +159,11 @@ def test_workspace_helper_builds_and_tests_with_explicit_underlays(
     fake_colcon.chmod(0o755)
     ros_setup = tmp_path / "ros_setup.bash"
     px4_msgs_setup = tmp_path / "px4_msgs_setup.bash"
-    ros_setup.write_text("export ROS_SETUP_SOURCED=1\n", encoding="utf-8")
+    ros_setup.write_text(
+        'if [ -n "$AMENT_TRACE_SETUP_FILES" ]; then :; fi\n'
+        "export ROS_SETUP_SOURCED=1\n",
+        encoding="utf-8",
+    )
     px4_msgs_setup.write_text(
         "export PX4_MSGS_SETUP_SOURCED=1\n", encoding="utf-8"
     )
