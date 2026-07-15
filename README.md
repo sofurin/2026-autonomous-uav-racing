@@ -93,7 +93,33 @@ ros2_ws/src/
 └─ racing_simulation/       # PX4 SITL、Gazebo 场景和虚拟传感器
 ```
 
-以上 6 个包已经有可构建的 ROS 2 骨架。仿真进程与 PX4 DDS 传输已经接通；感知算法、Offboard 控制和真机链路仍未实现。
+以上 6 个包均可构建。仿真进程、PX4 DDS 传输和最小 Offboard
+任务闭环已经接通；感知算法和真机链路仍未实现。
+
+在本地仿真电脑上验证最小任务（自动解锁、起飞 1 m、悬停 5 s、
+前进 1 m、返回并降落）：
+
+```bash
+cd ~/uav/2026-autonomous-uav-racing
+source /opt/ros/humble/setup.bash
+source ~/uav/px4_msgs_ws/install/setup.bash
+source install/setup.bash
+
+ros2 launch racing_bringup offboard_demo.launch.py \
+  px4_dir:=$HOME/PX4-Autopilot \
+  headless:=false
+```
+
+这是唯一默认启用自动解锁的专用入口，只能用于 SITL。普通 bringup、硬件
+launch 和独立控制节点均保持 `allow_arming_command:=false`。运行中可在另一
+终端请求安全中止：
+
+```bash
+ros2 service call /offboard_mission/abort std_srvs/srv/Trigger '{}'
+```
+
+任务状态可从 `/offboard_mission/state` 查看。详细接口和安全边界见
+[`docs/specs/minimal-offboard-mission.md`](docs/specs/minimal-offboard-mission.md)。
 
 `mode:=simulation` 已能编排外部 PX4 SITL、Micro XRCE-DDS Agent 和 Gazebo 相机桥。默认模型是项目自有的 `gz_team_racer`，外部 PX4 工作树仍作为依赖；首次使用需要运行 `racing_simulation/scripts/install_team_racer_px4.sh` 注册 airframe。具体启动方式和当前迁移边界见 [`docs/nuc-integration.md`](docs/nuc-integration.md)。
 

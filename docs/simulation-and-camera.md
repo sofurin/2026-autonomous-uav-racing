@@ -89,6 +89,19 @@ ros2 launch racing_bringup bringup.launch.py \
   px4_model:=gz_team_racer
 ```
 
+The simulation-only minimal Offboard mission has a separate entry point:
+
+```bash
+ros2 launch racing_bringup offboard_demo.launch.py \
+  px4_dir:=$HOME/PX4-Autopilot \
+  headless:=false
+```
+
+It explicitly enables automatic arming and runs takeoff, hover, a one-metre
+forward leg, return and landing. The normal simulation and hardware launch
+paths do not enable arming. The controller defaults to PX4 1.17's versioned
+`vehicle_local_position_v1` and `vehicle_status_v1` output topics.
+
 `gz_team_racer` already contains the D435 appearance in its exported CAD mesh,
 so it merges the project-owned sensor-only `realsense_d435_sensor` model and
 fixes that to `base_link` at the CAD component pose. This avoids a duplicate
