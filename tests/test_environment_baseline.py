@@ -1,5 +1,7 @@
 from pathlib import Path
 import re
+import os
+import subprocess
 
 
 # Repository-level tests are invoked from the checkout root. Keeping the base
@@ -70,3 +72,103 @@ def test_example_environment_does_not_select_a_real_flight_controller() -> None:
     assert "PX4_SERIAL_DEVICE=" in environment
     assert "/dev/ttyUSB0" not in environment
     assert "/dev/ttyACM0" not in environment
+
+
+def test_x11_authorization_targets_the_matching_host_user_not_root() -> None:
+    authorization = _read("scripts/authorize_gazebo_x11.sh")
+
+    assert "xhost +SI:localuser:root" not in authorization
+    assert 'container_uid="${RACING_UID:-$(id -u)}"' in authorization
+    assert "xhost +SI:localuser:" in authorization
+
+
+def test_environment_helper_rejects_unknown_profiles() -> None:
+    helper = REPOSITORY_ROOT / "scripts" / "environment.sh"
+
+    result = subprocess.run(
+        ["bash", str(helper), "flight", "up"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 2
+    assert "Expected simulation or nuc" in result.stderr
+
+
+def test_environment_helper_starts_then_enters_the_selected_service(
+    tmp_path: Path,
+) -> None:
+    helper = REPOSITORY_ROOT / "scripts" / "environment.sh"
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    docker_log = tmp_path / "docker.log"
+    fake_docker = fake_bin / "docker"
+    fake_docker.write_text(
+        "#!/usr/bin/env bash\n"
+        'printf "%s\\n" "$*" >>"$DOCKER_LOG"\n',
+        encoding="utf-8",
+    )
+    fake_docker.chmod(0o755)
+
+    environment = os.environ.copy()
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+    environment["DOCKER_LOG"] = str(docker_log)
+    result = subprocess.run(
+        ["bash", str(helper), "simulation", "shell"],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert docker_log.read_text(encoding="utf-8").splitlines() == [
+        "compose --profile simulation up -d simulation",
+        "compose --profile simulation exec simulation bash",
+    ]
+
+
+def test_workspace_helper_builds_and_tests_with_explicit_underlays(
+    tmp_path: Path,
+) -> None:
+    helper = REPOSITORY_ROOT / "scripts" / "build_workspace.sh"
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    colcon_log = tmp_path / "colcon.log"
+    fake_colcon = fake_bin / "colcon"
+    fake_colcon.write_text(
+        "#!/usr/bin/env bash\n"
+        'printf "%s\\n" "$*" >>"$COLCON_LOG"\n',
+        encoding="utf-8",
+    )
+    fake_colcon.chmod(0o755)
+    ros_setup = tmp_path / "ros_setup.bash"
+    px4_msgs_setup = tmp_path / "px4_msgs_setup.bash"
+    ros_setup.write_text("export ROS_SETUP_SOURCED=1\n", encoding="utf-8")
+    px4_msgs_setup.write_text(
+        "export PX4_MSGS_SETUP_SOURCED=1\n", encoding="utf-8"
+    )
+    workspace = tmp_path / "ros2_ws"
+    (workspace / "src").mkdir(parents=True)
+
+    environment = os.environ.copy()
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+    environment["COLCON_LOG"] = str(colcon_log)
+    environment["ROS_SETUP"] = str(ros_setup)
+    environment["PX4_MSGS_SETUP"] = str(px4_msgs_setup)
+    environment["ROS2_WORKSPACE"] = str(workspace)
+    result = subprocess.run(
+        ["bash", str(helper), "--test"],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert colcon_log.read_text(encoding="utf-8").splitlines() == [
+        "build --symlink-install",
+        "test --event-handlers console_cohesion+",
+        "test-result --verbose",
+    ]
