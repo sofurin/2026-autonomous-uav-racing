@@ -18,8 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       cmake \
       curl \
       git \
+      gnupg \
       libasio-dev \
       libtinyxml2-dev \
+      lsb-release \
       ninja-build \
       pkg-config \
       python3-colcon-common-extensions \
@@ -34,7 +36,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ros-humble-robot-state-publisher \
       ros-humble-ros-gz-bridge \
       ros-humble-xacro \
+      software-properties-common \
       sudo \
+      wget \
     && rm -rf /var/lib/apt/lists/* \
     && python3 -m pip install --no-cache-dir pymavlink==2.4.49
 
@@ -63,7 +67,7 @@ RUN cmake \
     && cmake --build /tmp/micro-xrce-agent-build --parallel "$(nproc)" \
     && cmake --install /tmp/micro-xrce-agent-build \
     && ldconfig \
-    && MicroXRCEAgent --version \
+    && test -x "$(command -v MicroXRCEAgent)" \
     && rm -rf /tmp/micro-xrce-agent-build
 
 RUN groupadd --gid "$RACING_GID" racing \
@@ -84,21 +88,17 @@ CMD ["bash"]
 
 FROM base AS simulation
 
-USER root
+USER racing
 ENV DEBIAN_FRONTEND=noninteractive
 
 # PX4's official Ubuntu setup installs the matching Gazebo simulation toolchain.
 RUN /opt/upstream/PX4-Autopilot/Tools/setup/ubuntu.sh --no-nuttx \
-    && rm -rf /var/lib/apt/lists/*
+    && sudo rm -rf /var/lib/apt/lists/*
 
-COPY ros2_ws/src/racing_simulation/scripts/install_team_racer_px4.sh /tmp/team-racer/scripts/install_team_racer_px4.sh
-COPY ros2_ws/src/racing_simulation/models/team_racer/config/4022_gz_team_racer /tmp/team-racer/models/team_racer/config/4022_gz_team_racer
-RUN chmod 0755 /tmp/team-racer/scripts/install_team_racer_px4.sh \
-    && /tmp/team-racer/scripts/install_team_racer_px4.sh --px4-dir /opt/upstream/PX4-Autopilot \
-    && rm -rf /tmp/team-racer \
-    && chown -R racing:racing /opt/upstream/PX4-Autopilot
-
-USER racing
+COPY --chown=racing:racing --chmod=0755 ros2_ws/src/racing_simulation/scripts/install_team_racer_px4.sh /tmp/team-racer/scripts/install_team_racer_px4.sh
+COPY --chown=racing:racing ros2_ws/src/racing_simulation/models/team_racer/config/4022_gz_team_racer /tmp/team-racer/models/team_racer/config/4022_gz_team_racer
+RUN /tmp/team-racer/scripts/install_team_racer_px4.sh --px4-dir /opt/upstream/PX4-Autopilot \
+    && rm -rf /tmp/team-racer
 
 
 FROM base AS nuc

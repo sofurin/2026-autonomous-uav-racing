@@ -43,6 +43,20 @@ def test_container_image_has_shared_simulation_and_nuc_stages() -> None:
     assert "USER racing" in dockerfile
 
 
+def test_px4_setup_installs_user_python_packages_for_the_runtime_user() -> None:
+    dockerfile = _read("docker/Dockerfile")
+    simulation_stage = dockerfile.split("FROM base AS simulation", 1)[1].split(
+        "FROM base AS nuc", 1
+    )[0]
+
+    assert re.search(
+        r"USER racing.*?RUN /opt/upstream/PX4-Autopilot/Tools/setup/ubuntu.sh",
+        simulation_stage,
+        re.DOTALL,
+    )
+    assert "USER root" not in simulation_stage
+
+
 def test_compose_profiles_share_the_project_and_keep_bringup_manual() -> None:
     compose = _read("compose.yaml")
 
