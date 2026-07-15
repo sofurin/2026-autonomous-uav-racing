@@ -23,6 +23,7 @@ def test_sitl_launch_exposes_replaceable_model_and_process_switches() -> None:
         assert f'"{argument}"' in source
 
     assert 'default_value="gz_team_racer"' in source
+    assert '"px4_model_pose", default_value="0,0,0.075,0,0,0"' in source
     assert "start_px4_sitl.sh" in source
     assert "MicroXRCEAgent" in source
     assert "ros_gz_bridge" in source
@@ -41,6 +42,7 @@ def test_project_bringup_includes_the_simulation_orchestrator() -> None:
     assert '"sitl.launch.py"' in source
     assert '"px4_model"' in source
     assert 'DeclareLaunchArgument("px4_model", default_value="gz_team_racer")' in source
+    assert '"px4_model_pose", default_value="0,0,0.075,0,0,0"' in source
 
 
 def test_competition_gui_demo_uses_the_official_start_pose_and_color_viewer() -> None:
@@ -50,7 +52,7 @@ def test_competition_gui_demo_uses_the_official_start_pose_and_color_viewer() ->
 
     assert '"px4_model": "gz_team_racer"' in source
     assert '"px4_world": "robocup_2025_baseline"' in source
-    assert '"px4_model_pose": "-4,-3.65,0,0,0,0"' in source
+    assert '"px4_model_pose": "-4,-3.65,0.095,0,0,0"' in source
     assert '"headless": "false"' in source
     assert '"start_camera_bridge": "true"' in source
     assert '"start_depth_bridge": "false"' in source

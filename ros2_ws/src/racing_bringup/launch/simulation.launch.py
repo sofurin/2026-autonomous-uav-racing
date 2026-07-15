@@ -40,7 +40,7 @@ def generate_launch_description():
             DeclareLaunchArgument("px4_model", default_value="gz_team_racer"),
             DeclareLaunchArgument("px4_world", default_value="default"),
             DeclareLaunchArgument(
-                "px4_model_pose", default_value="0,0,0,0,0,0"
+                "px4_model_pose", default_value="0,0,0.075,0,0,0"
             ),
             DeclareLaunchArgument("start_px4", default_value="true"),
             DeclareLaunchArgument("start_xrce_agent", default_value="true"),

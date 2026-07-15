@@ -45,7 +45,7 @@
       <collision name="central_stack_collision">
         <pose>-0.0070725679 0.0137969405 -0.0000639409 0 0 0</pose>
         <geometry>
-          <box><size>0.13 0.12 0.13</size></box>
+          <box><size>0.13 0.12 0.1350000054</size></box>
         </geometry>
       </collision>
       <collision name="front_right_to_rear_left_arm_collision">

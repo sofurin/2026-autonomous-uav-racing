@@ -31,7 +31,7 @@ def generate_launch_description():
             "px4_dir": px4_dir,
             "px4_model": "gz_team_racer",
             "px4_world": "robocup_2025_baseline",
-            "px4_model_pose": "-4,-3.65,0,0,0,0",
+            "px4_model_pose": "-4,-3.65,0.095,0,0,0",
             "headless": "false",
             "start_camera_bridge": "true",
             "start_depth_bridge": "false",

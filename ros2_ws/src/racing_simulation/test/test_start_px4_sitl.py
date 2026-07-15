@@ -42,6 +42,7 @@ def test_defaults_to_the_validated_team_racer_model(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr
     assert "PX4_SIM_MODEL=gz_team_racer" in result.stdout
     assert "PX4_GZ_WORLD=default" in result.stdout
+    assert "PX4_GZ_MODEL_POSE=0,0,0.075,0,0,0" in result.stdout
     assert (
         f"GZ_SIM_SERVER_CONFIG_PATH="
         f"{tmp_path / 'PX4-Autopilot' / 'Tools/simulation/gz/server.config'}"

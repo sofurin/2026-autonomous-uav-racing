@@ -18,6 +18,14 @@ mesh_bounds_flu_m:
   center: [-0.0070725679, 0.0137969405, -0.0000639409]
   base_link_height_for_ground_contact: 0.06756394
 
+spawn:
+  ground_plane_top_z_m: 0.0
+  default_pose_z_m: 0.075
+  default_initial_clearance_m: 0.00743606
+  competition_pad_top_z_m: 0.021
+  competition_pose_z_m: 0.095
+  competition_initial_clearance_m: 0.00643606
+
 motor_geometry:
   diagonal_axis_distance_m: 0.25
   adjacent_axis_distance_m: 0.1767766953
@@ -65,7 +73,7 @@ camera_mount:
 collision:
   strategy: primitive_only
   central_box:
-    size_m: [0.13, 0.12, 0.13]
+    size_m: [0.13, 0.12, 0.1350000054]
     pose_flu_m: [-0.0070725679, 0.0137969405, -0.0000639409]
   diagonal_arms:
     count: 2

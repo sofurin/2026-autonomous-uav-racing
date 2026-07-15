@@ -24,7 +24,7 @@ EOF
 px4_dir="${PX4_AUTOPILOT_DIR:-/root/docker_ws/uav_test/src/PX4-Autopilot}"
 model="${PX4_SIM_MODEL:-gz_team_racer}"
 world="${PX4_GZ_WORLD:-default}"
-pose="${PX4_GZ_MODEL_POSE:-0,0,0,0,0,0}"
+pose="${PX4_GZ_MODEL_POSE:-0,0,0.075,0,0,0}"
 models_dir="${RACING_GZ_MODELS_DIR:-}"
 worlds_dir="${RACING_GZ_WORLDS_DIR:-}"
 server_config="${GZ_SIM_SERVER_CONFIG_PATH:-}"

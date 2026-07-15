@@ -55,6 +55,22 @@ def test_visual_uses_team_cad_but_collisions_are_primitives():
     assert model.findall(".//collision/geometry/cylinder")
 
 
+def test_belly_collision_bottom_matches_the_cad_visual_bottom():
+    model = _model_root()
+    collision = model.find(
+        "./link[@name='base_link']/collision[@name='central_stack_collision']"
+    )
+    assert collision is not None
+    collision_z = float(collision.findtext("pose").split()[2])
+    collision_height = float(collision.findtext("geometry/box/size").split()[2])
+
+    geometry = yaml.safe_load(
+        (MODEL_DIR / "config" / "geometry.yaml").read_text(encoding="utf-8")
+    )
+    mesh_bottom = geometry["mesh_bounds_flu_m"]["min"][2]
+    assert math.isclose(collision_z - collision_height / 2.0, mesh_bottom, abs_tol=1e-8)
+
+
 def test_quad_x_motor_numbering_and_directions_are_explicit():
     model = _model_root()
     plugins = [
