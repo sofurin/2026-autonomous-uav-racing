@@ -1,6 +1,32 @@
 # NUC Integration
 
-## Current ownership
+## Reproducible deployment ownership
+
+The new `nuc` image owns the shared software underlay:
+
+```text
+/opt/upstream/
+├── PX4-Autopilot/          # exact commit from dependencies.repos
+├── px4_msgs/               # exact source commit
+└── Micro-XRCE-DDS-Agent/   # exact source commit
+/opt/px4_msgs/install/      # image-built ROS 2 underlay
+/workspace/project/         # bind-mounted team repository
+```
+
+Build and enter it from the repository root:
+
+```bash
+cp .env.example .env
+./scripts/environment.sh nuc build
+./scripts/environment.sh nuc shell
+./scripts/build_workspace.sh --test
+```
+
+The image starts idle. Only the designated operator starts camera, XRCE Agent
+and flight processes. Multiple SSH users must not start duplicate hardware
+owners.
+
+## Legacy NUC ownership during migration
 
 The NUC keeps upstream and legacy simulation dependencies outside this repository:
 
@@ -15,15 +41,17 @@ The NUC keeps upstream and legacy simulation dependencies outside this repositor
     └── ros2_ws/                     # Project-owned ROS 2 overlay
 ```
 
-The repository does not copy PX4 or `px4_msgs`. It points to the external PX4 checkout through the `px4_dir` launch argument and sources `uav_test/install/setup.bash` before building the project overlay.
+The legacy local image and `uav_test` workspace remain usable until the new NUC
+image has been built and hardware transport has been revalidated. They are not
+the baseline for new machines.
 
 ## Gazebo GUI authorization
 
-The current container runs as root and displays Gazebo through the NUC user's
-Wayland/Xwayland desktop session. GNOME starts
-`scripts/authorize_gazebo_x11.sh` after login. The script discovers Mutter's
-per-session Xauthority file and grants access only to the local root user with
-`xhost +SI:localuser:root`; it does not disable X11 access control globally.
+The simulation image runs as the same numeric UID as the NUC desktop user.
+GNOME starts `scripts/authorize_gazebo_x11.sh` after login. The script
+discovers Mutter's per-session Xauthority file and grants access only to the
+host user matching `RACING_UID`; it does not disable X11 access control
+globally and no longer authorizes container root.
 
 The desktop entry is installed at:
 
@@ -37,7 +65,7 @@ automatically at the next GNOME login.
 
 ## Build on the NUC
 
-Inside `ros2_humble_main`:
+Inside the legacy `ros2_humble_main` only:
 
 ```bash
 export ROS_DOMAIN_ID=0
@@ -79,7 +107,7 @@ ros2 launch racing_bringup bringup.launch.py \
 
 ## Model replacement boundary
 
-The current model is selected by configuration rather than imported by perception or control code. Register the project airframe in the external PX4 checkout once before the first build:
+The current model is selected by configuration rather than imported by perception or control code. The reproducible simulation image registers the project airframe during its build. Run the installer manually only in a legacy external PX4 checkout:
 
 ```bash
 bash ros2_ws/src/racing_simulation/scripts/install_team_racer_px4.sh \

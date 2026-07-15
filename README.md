@@ -29,7 +29,34 @@ Camera (TBD)
 
 NUC 负责感知、定位、赛道决策和高层轨迹；PX4 飞控负责状态估计、姿态/位置闭环、安全保护和电机输出。
 
-## 快速检查
+## 可复现开发环境
+
+首次使用：
+
+```bash
+cp .env.example .env
+./scripts/environment.sh simulation build
+./scripts/environment.sh simulation shell
+```
+
+进入容器后统一构建并测试：
+
+```bash
+./scripts/build_workspace.sh --test
+```
+
+NUC 使用单独的硬件 profile：
+
+```bash
+./scripts/environment.sh nuc build
+./scripts/environment.sh nuc shell
+```
+
+两个 profile 使用相同的 ROS 2、`px4_msgs` 和 Micro XRCE-DDS Agent
+基线，但不会自动启动仿真或真机飞行进程。完整说明见
+[`docker/README.md`](docker/README.md)。
+
+## NUC 快速检查
 
 在 NUC 上执行：
 
@@ -37,13 +64,14 @@ NUC 负责感知、定位、赛道决策和高层轨迹；PX4 飞控负责状态
 ./scripts/check_nuc_environment.sh
 ```
 
-启动 ROS 2 开发容器：
+已有旧 NUC 容器尚未迁移时，仍可临时使用兼容入口：
 
 ```bash
 ./scripts/start_ros2_container.sh
 ```
 
-脚本默认使用现有本地镜像 `ros2:humble-desktopV1.0`，可通过 `ROS_IMAGE` 覆盖。该镜像当前还没有可复现的 Dockerfile，详见 [`docker/README.md`](docker/README.md)。
+该脚本只复用旧的本地镜像，不是团队环境基线。新机器和完成迁移后的
+NUC 应使用上面的 Compose profile。
 
 ## 文档
 
@@ -51,6 +79,7 @@ NUC 负责感知、定位、赛道决策和高层轨迹；PX4 飞控负责状态
 - [`docs/simulation-and-camera.md`](docs/simulation-and-camera.md)：仿真、相机抽象和真机/仿真切换约定
 - [`docs/bringup.md`](docs/bringup.md)：建议的上电和启动顺序
 - [`docs/decisions/ADR-001-px4-native-ros2-dds.md`](docs/decisions/ADR-001-px4-native-ros2-dds.md)：采用 PX4 原生 ROS 2 DDS 桥接的决策
+- [`docs/decisions/ADR-002-reproducible-container-profiles.md`](docs/decisions/ADR-002-reproducible-container-profiles.md)：本地仿真与 NUC 环境统一方案
 
 ## ROS 2 包结构
 

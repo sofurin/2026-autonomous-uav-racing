@@ -41,15 +41,20 @@ Commands into PX4 use `/fmu/in/*`; telemetry and state from PX4 use `/fmu/out/*`
 
 ## Container boundary
 
-The currently inspected container is named `ros2_humble_main` and uses:
+The reproducible baseline derives `simulation` and `nuc` stages from one pinned
+ROS 2 Humble image. Both run as the configurable non-root `racing` UID/GID,
+source the image-built `px4_msgs` underlay and mount this repository at
+`/workspace/project`.
 
-- image `ros2:humble-desktopV1.0`
-- host networking
-- privileged device access
-- `/dev` and `/dev/bus/usb` mounts
-- `/home/zjutdeus/docker_ws` mounted at `/root/docker_ws`
+Both profiles use host networking and default `ROS_DOMAIN_ID` to `0`. The NUC
+profile temporarily retains privileged `/dev` access for legacy hardware
+bring-up; simulation receives only the X11 socket. Neither profile starts any
+ROS, camera or flight process automatically.
 
-The checked-in launcher keeps these capabilities configurable and defaults `ROS_DOMAIN_ID` to `0`. Passing an empty `ROS_DOMAIN_ID` previously caused the ROS 2 CLI to fail before graph discovery.
+The old root container `ros2_humble_main`, local image
+`ros2:humble-desktopV1.0` and `/root/docker_ws` layout are migration-only. They
+remain documented so the current NUC is not disrupted before hardware
+revalidation.
 
 ## Verification status on 2026-07-12
 

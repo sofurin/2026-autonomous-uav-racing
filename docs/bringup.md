@@ -12,6 +12,18 @@ Confirm the intended camera and flight controller appear by stable device identi
 
 ## 2. Start the ROS 2 container
 
+For the reproducible NUC profile:
+
+```bash
+./scripts/environment.sh nuc up
+./scripts/environment.sh nuc shell
+```
+
+The service starts idle. This is intentional: entering the environment must not
+arm, launch Offboard control or claim the camera automatically.
+
+During migration only, the legacy local-image launcher remains available:
+
 ```bash
 ./scripts/start_ros2_container.sh
 ```
@@ -22,6 +34,12 @@ Inside the container, verify:
 echo "$ROS_DOMAIN_ID"
 source /opt/ros/humble/setup.bash
 ros2 node list
+```
+
+Build the checked-out project with the same command used by developers:
+
+```bash
+./scripts/build_workspace.sh --test
 ```
 
 An empty node list is valid before applications start. A traceback caused by an empty `ROS_DOMAIN_ID` is not valid.
