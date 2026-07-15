@@ -1,7 +1,14 @@
-px4_interface:
+offboard_mission:
   ros__parameters:
-    transport: unset
-    offboard_heartbeat_hz: 10.0
-    command_frame: NED
-    require_manual_takeover: true
+    auto_start: false
     allow_arming_command: false
+    takeoff_altitude_m: 1.0
+    forward_distance_m: 1.0
+    hover_duration_s: 5.0
+    warmup_duration_s: 1.0
+    position_timeout_s: 1.0
+    phase_timeout_s: 20.0
+    target_tolerance_m: 0.25
+    max_altitude_m: 2.0
+    max_horizontal_distance_m: 3.0
+    command_retry_s: 1.0
