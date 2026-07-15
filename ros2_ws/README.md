@@ -1,34 +1,49 @@
 # ROS 2 Workspace
 
-This workspace contains project-owned packages only. Build upstream PX4 interface packages separately and source them before this workspace when required.
+This workspace contains project-owned packages only. PX4, `px4_msgs`, and the
+Micro XRCE-DDS Agent remain external, pinned dependencies.
 
 ```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+cd ..
+./scripts/build_workspace.sh --test
 ```
 
-The initial packages define stable ownership boundaries. They intentionally contain no flight behavior yet.
+The package boundaries are stable. Simulation orchestration, PX4 DDS transport,
+the project airframe, and a minimal simulation-only Offboard mission are
+implemented. Perception algorithms and the real flight-controller transport are
+still unimplemented and must not be reported as verified.
 
-On the NUC, source the existing dependency workspace before building:
+For a native WSL or legacy NUC environment whose `px4_msgs` underlay is not at
+`/opt/px4_msgs/install`, override it explicitly:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source /root/docker_ws/uav_test/install/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+PX4_MSGS_SETUP=$HOME/uav/px4_msgs_ws/install/setup.bash \
+  ./scripts/build_workspace.sh --test
 ```
 
-The default simulation entry point uses the external PX4 checkout and the current depth-camera vehicle:
+The default simulation entry point uses the external PX4 checkout and the
+project-owned team airframe:
 
 ```bash
 ros2 launch racing_bringup bringup.launch.py \
   mode:=simulation \
-  px4_model:=gz_x500_depth
+  px4_model:=gz_team_racer
 ```
 
-Replace `px4_model`, `px4_world` and `px4_model_pose` when the team airframe is registered. No perception or control package should depend on a concrete Gazebo model name.
+The minimal no-camera control validation is:
+
+```bash
+ros2 launch racing_bringup offboard_demo.launch.py \
+  px4_dir:=$HOME/PX4-Autopilot \
+  headless:=true
+```
+
+`competition_demo.launch.py` and `racing_simulation/tools/robocup_2025/` are
+legacy 2025 known-map references. They are useful for regression testing but
+are not the final random-course competition strategy.
+
+No perception or control package should depend on a concrete Gazebo model
+name.
 
 Current packages:
 
@@ -36,5 +51,5 @@ Current packages:
 - `racing_description`: base and camera coordinate frames
 - `racing_camera`: vendor-neutral topic and calibration contract
 - `racing_perception`: future gate and obstacle perception code
-- `racing_px4_control`: future PX4 telemetry and Offboard boundary
+- `racing_px4_control`: PX4 telemetry boundary and minimal Offboard mission
 - `racing_simulation`: simulator configuration, models and worlds

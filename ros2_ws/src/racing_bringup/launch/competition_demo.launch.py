@@ -1,3 +1,9 @@
+"""Launch the legacy RoboCup 2025 known-map GUI demonstration.
+
+This launch file is retained for regression and operator demonstrations. It is
+not the final random-course competition entry point.
+"""
+
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -95,8 +101,9 @@ def generate_launch_description():
             DeclareLaunchArgument("start_image_viewer", default_value="true"),
             LogInfo(
                 msg=(
-                    "Competition GUI demo: team_racer at start zone, "
-                    "color camera and known course enabled."
+                    "LEGACY 2025 KNOWN-COURSE DEMO: team_racer at start zone, "
+                    "color camera and fixed course enabled; not a final "
+                    "competition strategy."
                 )
             ),
             simulation,
