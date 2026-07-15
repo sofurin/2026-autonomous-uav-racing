@@ -40,11 +40,17 @@ public:
       declare_parameter("max_horizontal_distance_m", 3.0);
     auto_start_ = declare_parameter("auto_start", false);
     command_retry_s_ = declare_parameter("command_retry_s", 1.0);
+    const auto local_position_topic = declare_parameter(
+      "local_position_topic", std::string{"/fmu/out/vehicle_local_position_v1"});
+    const auto vehicle_status_topic = declare_parameter(
+      "vehicle_status_topic", std::string{"/fmu/out/vehicle_status_v1"});
+    const auto land_detected_topic = declare_parameter(
+      "land_detected_topic", std::string{"/fmu/out/vehicle_land_detected"});
     mission_ = std::make_unique<MissionController>(config);
 
     const auto input_qos = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
     local_position_sub_ = create_subscription<px4_msgs::msg::VehicleLocalPosition>(
-      "/fmu/out/vehicle_local_position", input_qos,
+      local_position_topic, input_qos,
       [this](const px4_msgs::msg::VehicleLocalPosition::SharedPtr msg) {
         telemetry_.position_valid = msg->xy_valid && msg->z_valid &&
           std::isfinite(msg->x) && std::isfinite(msg->y) && std::isfinite(msg->z) &&
@@ -57,14 +63,14 @@ public:
         position_received_ = true;
       });
     vehicle_status_sub_ = create_subscription<px4_msgs::msg::VehicleStatus>(
-      "/fmu/out/vehicle_status", input_qos,
+      vehicle_status_topic, input_qos,
       [this](const px4_msgs::msg::VehicleStatus::SharedPtr msg) {
         telemetry_.armed = msg->arming_state == px4_msgs::msg::VehicleStatus::ARMING_STATE_ARMED;
         telemetry_.offboard =
           msg->nav_state == px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_OFFBOARD;
       });
     land_detected_sub_ = create_subscription<px4_msgs::msg::VehicleLandDetected>(
-      "/fmu/out/vehicle_land_detected", input_qos,
+      land_detected_topic, input_qos,
       [this](const px4_msgs::msg::VehicleLandDetected::SharedPtr msg) {
         telemetry_.landed = msg->landed;
       });
@@ -249,4 +255,3 @@ int main(int argc, char * argv[])
   rclcpp::shutdown();
   return 0;
 }
-

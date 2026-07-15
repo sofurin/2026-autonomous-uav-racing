@@ -33,8 +33,10 @@ After an explicit start request:
 
 ## ROS interface
 
-- Subscriptions: `/fmu/out/vehicle_local_position`, `/fmu/out/vehicle_status`,
-  `/fmu/out/vehicle_land_detected`
+- Subscriptions default to the PX4 1.17 topics
+  `/fmu/out/vehicle_local_position_v1`, `/fmu/out/vehicle_status_v1`, and
+  `/fmu/out/vehicle_land_detected`; topic names are parameters for older PX4
+  releases.
 - Publications: `/fmu/in/offboard_control_mode`,
   `/fmu/in/trajectory_setpoint`, `/fmu/in/vehicle_command`, and private
   `~/state`
@@ -48,4 +50,3 @@ After an explicit start request:
   existing default simulation and hardware behavior.
 - SITL telemetry shows the vehicle complete takeoff, hover, forward flight,
   return, and landing.
-

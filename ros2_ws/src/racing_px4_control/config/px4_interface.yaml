@@ -12,3 +12,7 @@ offboard_mission:
     max_altitude_m: 2.0
     max_horizontal_distance_m: 3.0
     command_retry_s: 1.0
+    # PX4 1.17 versioned output topics. Override these for older PX4 releases.
+    local_position_topic: /fmu/out/vehicle_local_position_v1
+    vehicle_status_topic: /fmu/out/vehicle_status_v1
+    land_detected_topic: /fmu/out/vehicle_land_detected
