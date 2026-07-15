@@ -6,7 +6,7 @@ repositories:
   px4_msgs:
     type: git
     url: https://github.com/PX4/px4_msgs.git
-    version: a5aec95ed69086467b1f92de30093a04d03fd1d4
+    version: aed8488dcf71184231a7b3019a179268696b7ea1
   Micro-XRCE-DDS-Agent:
     type: git
     url: https://github.com/eProsima/Micro-XRCE-DDS-Agent.git

@@ -7,12 +7,17 @@ branches.
 | Dependency | Upstream | Branch | Commit |
 | --- | --- | --- | --- |
 | PX4 Autopilot | `https://github.com/PX4/PX4-Autopilot.git` | `release/1.17` | `6737fe1c3754a81a983b8f5aea6797b7d1669be6` |
-| px4_msgs | `https://github.com/PX4/px4_msgs.git` | `main` | `a5aec95ed69086467b1f92de30093a04d03fd1d4` |
+| px4_msgs | `https://github.com/PX4/px4_msgs.git` | `main` | `aed8488dcf71184231a7b3019a179268696b7ea1` |
 | Micro XRCE-DDS Agent | `https://github.com/eProsima/Micro-XRCE-DDS-Agent.git` | `master` | `155cfaaf8b7abac2e85d4a62d3649b09ace0be55` |
 
 ## Compatibility rule
 
 `px4_msgs` definitions must remain compatible with the PX4 firmware deployed to the flight controller. Updating either repository requires an explicit compatibility check before flight testing.
+
+The pinned PX4 revision exports `VehicleStatus` message version 1. The
+`px4_msgs` revision above was selected because its versioned PX4 ROS 2 message
+definitions match that interface; newer `px4_msgs` revisions use an incompatible
+`VehicleStatus` schema.
 
 ## Container baseline
 

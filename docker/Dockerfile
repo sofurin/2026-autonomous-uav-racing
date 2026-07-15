@@ -48,7 +48,7 @@ RUN mkdir -p /opt/upstream \
     && git -C /opt/upstream/PX4-Autopilot submodule update --init --recursive \
     && git -C /opt/upstream/Micro-XRCE-DDS-Agent submodule update --init --recursive \
     && test "$(git -C /opt/upstream/PX4-Autopilot rev-parse HEAD)" = "6737fe1c3754a81a983b8f5aea6797b7d1669be6" \
-    && test "$(git -C /opt/upstream/px4_msgs rev-parse HEAD)" = "a5aec95ed69086467b1f92de30093a04d03fd1d4" \
+    && test "$(git -C /opt/upstream/px4_msgs rev-parse HEAD)" = "aed8488dcf71184231a7b3019a179268696b7ea1" \
     && test "$(git -C /opt/upstream/Micro-XRCE-DDS-Agent rev-parse HEAD)" = "155cfaaf8b7abac2e85d4a62d3649b09ace0be55"
 
 RUN source /opt/ros/humble/setup.bash \

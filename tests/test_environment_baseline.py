@@ -18,7 +18,7 @@ def test_external_dependencies_are_machine_readable_and_pinned() -> None:
 
     expected_revisions = {
         "PX4-Autopilot": "6737fe1c3754a81a983b8f5aea6797b7d1669be6",
-        "px4_msgs": "a5aec95ed69086467b1f92de30093a04d03fd1d4",
+        "px4_msgs": "aed8488dcf71184231a7b3019a179268696b7ea1",
         "Micro-XRCE-DDS-Agent": "155cfaaf8b7abac2e85d4a62d3649b09ace0be55",
     }
     for repository, revision in expected_revisions.items():
