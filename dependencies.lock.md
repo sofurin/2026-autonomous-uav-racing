@@ -1,10 +1,12 @@
 # Dependency Baseline
 
-The following revisions were read from the NUC on 2026-07-12. Clone these upstream repositories into a local ROS 2 workspace instead of copying their source into this repository.
+The machine-readable source of truth is [`dependencies.repos`](dependencies.repos).
+The container build imports these exact revisions instead of following moving
+branches.
 
 | Dependency | Upstream | Branch | Commit |
 | --- | --- | --- | --- |
-| PX4 Autopilot | `https://github.com/PX4/PX4-Autopilot.git` | `release/1.17` | `2c355919e4ff0ffb0b68a138038f205b6dbefa97` |
+| PX4 Autopilot | `https://github.com/PX4/PX4-Autopilot.git` | `release/1.17` | `6737fe1c3754a81a983b8f5aea6797b7d1669be6` |
 | px4_msgs | `https://github.com/PX4/px4_msgs.git` | `main` | `a5aec95ed69086467b1f92de30093a04d03fd1d4` |
 | Micro XRCE-DDS Agent | `https://github.com/eProsima/Micro-XRCE-DDS-Agent.git` | `master` | `155cfaaf8b7abac2e85d4a62d3649b09ace0be55` |
 
@@ -12,10 +14,29 @@ The following revisions were read from the NUC on 2026-07-12. Clone these upstre
 
 `px4_msgs` definitions must remain compatible with the PX4 firmware deployed to the flight controller. Updating either repository requires an explicit compatibility check before flight testing.
 
-## NUC working-tree warning
+## Container baseline
 
-The inspected PX4 checkout was not clean: `Tools/simulation/gz` was modified and an untracked Xtensa toolchain archive existed under `Tools/setup/`. Those local files are deliberately excluded from this baseline. Review and preserve them separately if they represent intentional work.
+| Component | Pinned value |
+| --- | --- |
+| ROS image | `osrf/ros:humble-desktop@sha256:3d87cf339919a85cff7743ec9ba5e7ec81ccc26c9f722f1c7a6af5008dfdc128` |
+| pymavlink | `2.4.49` |
 
-The former Astra driver workspace is also deliberately excluded because the competition camera has not been selected.
+The ROS image digest and source commits are immutable. Ubuntu and ROS packages
+installed through `apt` are intentionally named but not frozen to repository
+snapshot timestamps, so rebuilding on different dates is functionally
+reproducible but not guaranteed to be byte-for-byte identical.
 
-The NUC Gazebo-model submodule currently contains an uncommitted `realsense_d435` model, an `x500_depth` override and RoboCup course assets. These are project-owned migration candidates, not part of the clean upstream commit recorded above. Do not reset that submodule before the assets are reviewed and migrated.
+## Migration warning
+
+The WSL checkout inspected on 2026-07-15 was already at the pinned PX4 commit,
+but it was modified by the team-airframe installation. The container build now
+reapplies that installation from project-owned files with
+`install_team_racer_px4.sh`; a dirty host PX4 checkout is no longer the team
+baseline.
+
+The former Astra driver workspace remains excluded because the competition
+camera has not been selected.
+
+Reviewed Gazebo worlds, vehicle models, D435 assets and RoboCup tools are owned
+by `racing_simulation`. Legacy PX4 working trees may still contain uncommitted
+copies; do not use those copies as the source of truth.

@@ -1,0 +1,53 @@
+x-racing-common: &racing-common
+  init: true
+  network_mode: host
+  working_dir: /workspace/project
+  environment:
+    ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
+    PX4_AUTOPILOT_DIR: /opt/upstream/PX4-Autopilot
+  volumes:
+    - ./:/workspace/project
+  stdin_open: true
+  tty: true
+  command: ["sleep", "infinity"]
+
+services:
+  simulation:
+    <<: *racing-common
+    profiles: ["simulation"]
+    image: uav-racing-simulation:humble
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: simulation
+      args:
+        RACING_UID: ${RACING_UID:-1000}
+        RACING_GID: ${RACING_GID:-1000}
+    environment:
+      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
+      PX4_AUTOPILOT_DIR: /opt/upstream/PX4-Autopilot
+      DISPLAY: ${DISPLAY:-:0}
+      QT_X11_NO_MITSHM: "1"
+    volumes:
+      - ./:/workspace/project
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  nuc:
+    <<: *racing-common
+    profiles: ["nuc"]
+    image: uav-racing-nuc:humble
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: nuc
+      args:
+        RACING_UID: ${RACING_UID:-1000}
+        RACING_GID: ${RACING_GID:-1000}
+    privileged: true
+    environment:
+      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
+      PX4_AUTOPILOT_DIR: /opt/upstream/PX4-Autopilot
+      PX4_SERIAL_DEVICE: ${PX4_SERIAL_DEVICE:-}
+    volumes:
+      - ./:/workspace/project
+      - /dev:/dev
