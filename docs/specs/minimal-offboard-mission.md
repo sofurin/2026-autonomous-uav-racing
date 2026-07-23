@@ -21,7 +21,11 @@ After an explicit start request:
 
 ## Safety contract
 
-- `allow_arming_command` and `auto_start` default to `false`.
+- `allow_mission_start`, `allow_arming_command` and `auto_start` default to
+  `false`.
+- Hardware flight may enable `allow_mission_start` while keeping
+  `allow_arming_command=false`, so the state machine can wait for an explicit
+  manual arm.
 - The normal project bringup and hardware launch files never enable arming.
 - Only the dedicated simulation demo launch may explicitly enable arming and
   automatic start.

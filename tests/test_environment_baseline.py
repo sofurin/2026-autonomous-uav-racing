@@ -115,6 +115,11 @@ def test_xrce_agent_command_requires_a_stable_serial_identity() -> None:
     with pytest.raises(ValueError, match="/dev/serial/by-id"):
         serial_agent_command("/dev/ttyACM0", "921600")
 
+    with pytest.raises(ValueError, match="/dev/serial/by-id"):
+        serial_agent_command(
+            "/dev/serial/by-id/../../ttyACM0", "921600"
+        )
+
     with pytest.raises(ValueError, match="baud"):
         serial_agent_command("/dev/serial/by-id/usb-PX4_FMU", "fast")
 
@@ -241,3 +246,48 @@ def test_workspace_helper_sources_underlays_without_nounset_then_builds_and_test
         "test --event-handlers console_cohesion+",
         "test-result --verbose",
     ]
+
+
+def test_hardware_topic_check_is_read_only_and_verifies_both_directions(
+    tmp_path: Path,
+) -> None:
+    helper = REPOSITORY_ROOT / "scripts" / "check_hardware_topics.sh"
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    ros_log = tmp_path / "ros.log"
+    fake_ros2 = fake_bin / "ros2"
+    fake_ros2.write_text(
+        "#!/usr/bin/env bash\n"
+        'printf "%s\\n" "$*" >>"$ROS_LOG"\n'
+        'if [[ "$*" == "topic list" ]]; then\n'
+        "  printf '%s\\n' "
+        "'/fmu/out/vehicle_status_v1' "
+        "'/fmu/out/vehicle_local_position_v1' "
+        "'/fmu/out/vehicle_land_detected' "
+        "'/fmu/in/offboard_control_mode' "
+        "'/fmu/in/trajectory_setpoint' "
+        "'/fmu/in/vehicle_command'\n"
+        "fi\n",
+        encoding="utf-8",
+    )
+    fake_ros2.chmod(0o755)
+
+    environment = os.environ.copy()
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+    environment["ROS_LOG"] = str(ros_log)
+    result = subprocess.run(
+        ["bash", str(helper)],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert ros_log.read_text(encoding="utf-8").splitlines() == [
+        "topic list",
+        "topic echo /fmu/out/vehicle_status_v1 --once",
+        "topic echo /fmu/out/vehicle_local_position_v1 --once",
+        "topic echo /fmu/out/vehicle_land_detected --once",
+    ]
+    assert "/fmu/in/vehicle_command" in result.stdout

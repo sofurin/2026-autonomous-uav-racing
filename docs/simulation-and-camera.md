@@ -34,7 +34,10 @@ The exact namespace may change before implementation, but it must be configured 
 base_link -> camera_link -> camera_optical_frame
 ```
 
-Calibration belongs under the hardware configuration, not in perception code. The competition camera remains undecided, so no Astra-specific dependency or configuration is part of the baseline.
+Calibration belongs under the hardware configuration, not in perception code.
+The Intel RealSense D435 is selected, while its ROS 2 driver, measured
+extrinsics and runtime parameters remain pending. No Astra-specific dependency
+or configuration is part of the baseline.
 
 ## Simulation path
 

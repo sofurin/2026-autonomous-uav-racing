@@ -46,22 +46,71 @@ An empty node list is valid before applications start. A traceback caused by an 
 
 ## 3. Start the selected camera driver
 
-The competition camera is not selected yet. Add its driver and calibration only after the hardware decision is made. Verification must include image timestamps, frame IDs, resolution, frame rate and exposure behavior—not only USB enumeration.
+The Intel RealSense D435 is selected, but its driver and calibration are not
+part of the runtime yet. The hardware launch intentionally works without a
+camera so flight-controller transport can be validated first. When the D435
+adapter is added, verification must include image timestamps, frame IDs,
+resolution, frame rate and exposure behavior—not only USB enumeration.
 
 ## 4. Start the PX4 bridge
 
-Start the Micro XRCE-DDS Agent with the selected transport. Examples are intentionally omitted until serial versus UDP and the actual device identity are confirmed.
+Configure PX4 to run uXRCE-DDS on the dedicated companion-computer serial port.
+For TELEM2 this normally means `UXRCE_DDS_CFG=TELEM2` and
+`SER_TEL2_BAUD=921600`; confirm that another protocol is not assigned to the
+same port.
+
+On the NUC host, copy `.env.example` to the untracked `.env` and set the
+flight controller's stable identity:
+
+```bash
+PX4_SERIAL_DEVICE=/dev/serial/by-id/<actual-flight-controller-or-adapter>
+PX4_SERIAL_BAUD=921600
+```
+
+Start only the description and serial XRCE Agent:
+
+```bash
+ros2 launch racing_bringup hardware.launch.py \
+  start_xrce_agent:=true
+```
+
+The launch rejects `/dev/ttyACM0` and `/dev/ttyUSB0`; use
+`/dev/serial/by-id/...` so reconnecting another USB device cannot silently
+change the flight-controller target.
 
 Verify that PX4 topics appear:
 
 ```bash
-ros2 topic list | grep '^/fmu/'
-ros2 topic echo /fmu/out/vehicle_status --once
+./scripts/check_hardware_topics.sh
 ```
 
 ## 5. Start autonomy nodes
 
-Bring up perception, localization, mission and trajectory components in that order. Before publishing vehicle commands, confirm:
+The real-aircraft control node is also opt-in. The following starts it in
+standby but does not permit a mission start or automatic arming:
+
+```bash
+ros2 launch racing_bringup hardware.launch.py \
+  start_xrce_agent:=true \
+  start_offboard_controller:=true
+```
+
+After a valid PX4 local position, RC takeover, emergency stop and loss actions
+have been verified, mission start can be enabled:
+
+```bash
+ros2 launch racing_bringup hardware.launch.py \
+  start_xrce_agent:=true \
+  start_offboard_controller:=true \
+  allow_mission_start:=true
+```
+
+This hardware launch always forces `allow_arming_command=false` and
+`auto_start=false`. The operator must explicitly call
+`/offboard_mission/start` and arm through the approved manual path.
+
+Bring up perception, localization, mission and trajectory components in that
+order. Before publishing vehicle commands, confirm:
 
 - coordinate frames and timestamp source
 - PX4 message compatibility and QoS
@@ -78,6 +127,8 @@ Treat these as separate gates:
 3. camera data is valid
 4. DDS Agent connects to PX4
 5. telemetry is received
-6. commands are accepted while disarmed
-7. restrained motor test passes
-8. controlled flight test passes
+6. the controller remains in standby by default
+7. manual mission start reaches `wait_for_position` without arming
+8. commands are accepted while disarmed
+9. propeller-free actuator direction test passes
+10. controlled low-altitude flight test passes

@@ -8,7 +8,7 @@ Developer workstation
   v
 Intel NUC (Ubuntu 22.04)
   |-- Docker: ROS 2 Humble development environment
-  |-- Camera driver (TBD)
+  |-- D435 driver and adapter (selected, not implemented)
   |-- Perception and localization (planned)
   |-- Racing mission and trajectory logic (planned)
   `-- Micro XRCE-DDS Agent (planned runtime process)
@@ -56,7 +56,7 @@ The old root container `ros2_humble_main`, local image
 remain documented so the current NUC is not disrupted before hardware
 revalidation.
 
-## Verification status on 2026-07-12
+## Verification status on 2026-07-23
 
 | Layer | Status | Evidence |
 | --- | --- | --- |
@@ -65,17 +65,18 @@ revalidation.
 | ROS 2 application graph | Simulation bridge verified | project launch started TF and exposed PX4 DDS topics |
 | PX4 source baseline | Verified on disk | `release/1.17` checkout found |
 | XRCE Agent process | Verified on demand | project launch established a UDP 8888 session with PX4 SITL |
-| Flight-controller transport | Not verified | no `/dev/ttyACM*`, `/dev/ttyUSB*` or `/dev/serial/by-id` detected |
-| Competition camera | Undecided | do not treat the old Astra workspace as the selected camera |
+| Flight-controller transport launcher | Implemented, not hardware-verified | opt-in serial XRCE launch requires `/dev/serial/by-id/...` and never starts automatically |
+| Flight-controller transport on hardware | Not verified | no real serial session or `/fmu/*` telemetry has been observed in this checkout |
+| Competition camera | D435 selected | physical camera is available; ROS driver, calibration and localization remain pending |
 | Real motor/flight behavior | Not tested | no claim of hardware or flight success |
 
 ## Required decisions before hardware integration
 
-1. Select the competition camera and its ROS 2 driver.
-2. Choose serial or UDP for the flight-controller DDS transport.
+1. Pin and integrate the D435 ROS 2 driver.
+2. Record the real `/dev/serial/by-id/...` identity and verify the serial DDS session.
 3. Record the exact flight-controller board and flashed PX4 revision.
-4. Define command authority, offboard-loss behavior and manual takeover.
-5. Add the team's perception, planning and mission nodes with interface contracts.
+4. Define and flight-test offboard-loss behavior and manual takeover.
+5. Add the team's localization, perception and planning nodes with interface contracts.
 
 ## Hardware and simulation parity
 

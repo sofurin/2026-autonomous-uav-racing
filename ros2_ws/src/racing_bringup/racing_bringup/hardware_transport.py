@@ -2,11 +2,17 @@ from pathlib import PurePosixPath
 
 
 def serial_agent_command(device: str, baud: str) -> list[str]:
-    normalized_device = str(PurePosixPath(device.strip()))
-    if not normalized_device.startswith("/dev/serial/by-id/"):
+    device_path = PurePosixPath(device.strip())
+    stable_device_directory = PurePosixPath("/dev/serial/by-id")
+    if device_path.parent != stable_device_directory or device_path.name in {
+        "",
+        ".",
+        "..",
+    }:
         raise ValueError(
-            "PX4 serial device must use a stable /dev/serial/by-id/... path"
+            "PX4 serial device must be a direct /dev/serial/by-id/... entry"
         )
+    normalized_device = str(device_path)
 
     try:
         normalized_baud = int(baud)

@@ -11,7 +11,7 @@
 - ROS 环境：Docker 容器中的 ROS 2 Humble
 - 飞控栈：PX4 `release/1.17`
 - ROS 2 与 PX4 接口：`px4_msgs` + Micro XRCE-DDS Agent
-- 相机：比赛相机型号和驱动尚未确定，不把 NUC 上遗留的 Astra 工作区作为方案基线
+- 相机：Intel RealSense D435 已选定并到货；驱动、标定和视觉定位尚未接入
 - 仿真载具：默认使用项目自有的 `gz_team_racer`；`gz_x500_depth` 仍可通过 launch 参数选择
 
 ## 目标数据链路
@@ -94,7 +94,7 @@ ros2_ws/src/
 ```
 
 以上 6 个包均可构建。仿真进程、PX4 DDS 传输和最小 Offboard
-任务闭环已经接通；感知算法和真机链路仍未实现。
+任务闭环已经接通；真机串口启动入口已经实现但尚未连接实物验证，感知和定位仍未实现。
 
 在本地仿真电脑上验证最小任务（自动解锁、起飞 1 m、悬停 5 s、
 前进 1 m、返回并降落）：
@@ -111,7 +111,9 @@ ros2 launch racing_bringup offboard_demo.launch.py \
 ```
 
 这是唯一默认启用自动解锁的专用入口，只能用于 SITL。普通 bringup、硬件
-launch 和独立控制节点均保持 `allow_arming_command:=false`。运行中可在另一
+launch 和独立控制节点均保持 `allow_mission_start:=false` 和
+`allow_arming_command:=false`。硬件入口即使允许任务启动，也会强制关闭
+ROS 2 自动解锁并等待人工解锁。运行中可在另一
 终端请求安全中止：
 
 ```bash

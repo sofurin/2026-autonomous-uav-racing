@@ -89,6 +89,18 @@ Set `PX4_SERIAL_DEVICE` in the untracked `.env` only after selecting a stable
 `/dev/serial/by-id/...` device. The current NUC profile keeps the legacy broad
 `/dev` access so existing hardware bring-up remains possible. Replace this with
 explicit device mappings after the flight controller and camera are finalized.
+`PX4_SERIAL_BAUD` defaults to `921600`.
+
+Inside the NUC service, the opt-in real-flight transport command is:
+
+```bash
+ros2 launch racing_bringup hardware.launch.py \
+  start_xrce_agent:=true
+```
+
+This rejects unstable `/dev/ttyACM*` and `/dev/ttyUSB*` names. The separate
+`start_offboard_controller` and `allow_mission_start` switches also default to
+`false`, and the hardware launch cannot enable ROS 2 automatic arming.
 
 Only one operator should own the hardware service. Other SSH users may enter
 the same service for diagnostics, but they must not start duplicate camera,
