@@ -47,6 +47,8 @@ services:
     environment:
       ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
       PX4_AUTOPILOT_DIR: /opt/upstream/PX4-Autopilot
+      PX4_XRCE_TRANSPORT: ${PX4_XRCE_TRANSPORT:-serial}
+      PX4_XRCE_UDP_PORT: ${PX4_XRCE_UDP_PORT:-8888}
       PX4_SERIAL_DEVICE: ${PX4_SERIAL_DEVICE:-}
       PX4_SERIAL_BAUD: ${PX4_SERIAL_BAUD:-921600}
     volumes:

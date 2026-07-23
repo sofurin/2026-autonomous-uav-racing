@@ -71,6 +71,8 @@ def test_compose_profiles_share_the_project_and_keep_bringup_manual() -> None:
     assert "./:/workspace/project" in compose
     assert 'command: ["sleep", "infinity"]' in compose
     assert "ros2 launch" not in compose
+    assert "PX4_XRCE_TRANSPORT: ${PX4_XRCE_TRANSPORT:-serial}" in compose
+    assert "PX4_XRCE_UDP_PORT: ${PX4_XRCE_UDP_PORT:-8888}" in compose
     assert "PX4_SERIAL_BAUD: ${PX4_SERIAL_BAUD:-921600}" in compose
 
 
@@ -87,6 +89,8 @@ def test_example_environment_does_not_select_a_real_flight_controller() -> None:
     environment = _read(".env.example")
 
     assert "ROS_DOMAIN_ID=0" in environment
+    assert "PX4_XRCE_TRANSPORT=serial" in environment
+    assert "PX4_XRCE_UDP_PORT=8888" in environment
     assert "PX4_SERIAL_DEVICE=" in environment
     assert "PX4_SERIAL_BAUD=921600" in environment
     assert "/dev/ttyUSB0" not in environment
@@ -124,6 +128,28 @@ def test_xrce_agent_command_requires_a_stable_serial_identity() -> None:
         serial_agent_command("/dev/serial/by-id/usb-PX4_FMU", "fast")
 
 
+def test_xrce_agent_command_supports_udp4_with_a_valid_port() -> None:
+    package_root = REPOSITORY_ROOT / "ros2_ws/src/racing_bringup"
+    sys.path.insert(0, str(package_root))
+    try:
+        from racing_bringup.hardware_transport import udp_agent_command
+    finally:
+        sys.path.pop(0)
+
+    assert udp_agent_command("8888") == [
+        "MicroXRCEAgent",
+        "udp4",
+        "-p",
+        "8888",
+    ]
+
+    with pytest.raises(ValueError, match="port"):
+        udp_agent_command("0")
+
+    with pytest.raises(ValueError, match="port"):
+        udp_agent_command("not-a-port")
+
+
 def test_hardware_launch_keeps_transport_and_motion_opt_in() -> None:
     hardware_launch = _read(
         "ros2_ws/src/racing_bringup/launch/hardware.launch.py"
@@ -142,6 +168,9 @@ def test_hardware_launch_keeps_transport_and_motion_opt_in() -> None:
     assert '"allow_arming_command": "false"' in hardware_launch
     assert '"auto_start": "false"' in hardware_launch
     assert "serial_agent_command" in hardware_launch
+    assert "udp_agent_command" in hardware_launch
+    assert '"xrce_transport"' in hardware_launch
+    assert '"xrce_agent_port"' in hardware_launch
 
 
 def test_x11_authorization_targets_the_matching_host_user_not_root() -> None:
