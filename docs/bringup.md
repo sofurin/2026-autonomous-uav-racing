@@ -61,10 +61,11 @@ they are alternatives, so start only one Agent.
 ### Ethernet / UDP
 
 Assign static addresses to the PX4 Ethernet interface and the computer's wired
-interface on the same subnet. Configure the PX4 uXRCE-DDS client to send UDP to
-the computer's wired-interface address on port 8888. The exact PX4 Ethernet
-parameters depend on the flight-controller Ethernet hardware and PX4 build, so
-record the confirmed values for the selected board rather than guessing them.
+interface on the same subnet. Configure `UXRCE_DDS_CFG=Ethernet`,
+`UXRCE_DDS_PRT=8888`, and set `UXRCE_DDS_AG_IP` to the computer's wired
+address encoded as a signed 32-bit integer. PX4's
+`Tools/convert_ip.py <address>` prints that integer. Record the board-specific
+Ethernet address and netmask parameters alongside these common DDS settings.
 
 On native Ubuntu, or WSL with mirrored networking and an inbound UDP firewall
 rule, start the Agent with:
