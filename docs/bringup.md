@@ -54,6 +54,37 @@ resolution, frame rate and exposure behavior—not only USB enumeration.
 
 ## 4. Start the PX4 bridge
 
+The hardware launch supports either UDP over Ethernet or a dedicated serial
+port. Both transports use PX4's uXRCE-DDS client and the Micro XRCE-DDS Agent;
+they are alternatives, so start only one Agent.
+
+### Ethernet / UDP
+
+Assign static addresses to the PX4 Ethernet interface and the computer's wired
+interface on the same subnet. Configure `UXRCE_DDS_CFG=Ethernet`,
+`UXRCE_DDS_PRT=8888`, and set `UXRCE_DDS_AG_IP` to the computer's wired
+address encoded as a signed 32-bit integer. PX4's
+`Tools/convert_ip.py <address>` prints that integer. Record the board-specific
+Ethernet address and netmask parameters alongside these common DDS settings.
+
+On native Ubuntu, or WSL with mirrored networking and an inbound UDP firewall
+rule, start the Agent with:
+
+```bash
+ros2 launch racing_bringup hardware.launch.py \
+  start_xrce_agent:=true \
+  xrce_transport:=udp4 \
+  xrce_agent_port:=8888
+```
+
+The Agent listens on all IPv4 interfaces. PX4 must be configured with the
+computer's reachable wired-interface address, not `127.0.0.1`. With default
+WSL2 NAT, an Ethernet-connected PX4 generally cannot initiate UDP traffic
+directly to the private WSL address; use WSL mirrored networking or native
+Ubuntu.
+
+### Serial
+
 Configure PX4 to run uXRCE-DDS on the dedicated companion-computer serial port.
 For TELEM2 this normally means `UXRCE_DDS_CFG=TELEM2` and
 `SER_TEL2_BAUD=921600`; confirm that another protocol is not assigned to the

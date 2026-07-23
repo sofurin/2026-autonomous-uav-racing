@@ -1,6 +1,22 @@
 from pathlib import PurePosixPath
 
 
+def udp_agent_command(port: str) -> list[str]:
+    try:
+        normalized_port = int(port)
+    except ValueError as error:
+        raise ValueError("PX4 XRCE UDP port must be an integer") from error
+    if normalized_port < 1 or normalized_port > 65_535:
+        raise ValueError("PX4 XRCE UDP port must be between 1 and 65535")
+
+    return [
+        "MicroXRCEAgent",
+        "udp4",
+        "-p",
+        str(normalized_port),
+    ]
+
+
 def serial_agent_command(device: str, baud: str) -> list[str]:
     device_path = PurePosixPath(device.strip())
     stable_device_directory = PurePosixPath("/dev/serial/by-id")
