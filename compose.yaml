@@ -48,6 +48,7 @@ services:
       ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
       PX4_AUTOPILOT_DIR: /opt/upstream/PX4-Autopilot
       PX4_SERIAL_DEVICE: ${PX4_SERIAL_DEVICE:-}
+      PX4_SERIAL_BAUD: ${PX4_SERIAL_BAUD:-921600}
     volumes:
       - ./:/workspace/project
       - /dev:/dev
