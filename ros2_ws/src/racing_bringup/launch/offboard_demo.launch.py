@@ -44,6 +44,7 @@ def generate_launch_description():
                     str(control_share / "launch" / "offboard_mission.launch.py")
                 ),
                 launch_arguments={
+                    "allow_mission_start": "true",
                     "allow_arming_command": "true",
                     "auto_start": "true",
                 }.items(),
@@ -56,4 +57,3 @@ def generate_launch_description():
             ),
         ]
     )
-

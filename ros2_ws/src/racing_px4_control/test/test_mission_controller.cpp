@@ -28,9 +28,37 @@ TEST(MissionController, DefaultsDoNotPermitArming)
   EXPECT_EQ(mission.state(), MissionState::Standby);
 }
 
+TEST(MissionController, ManualArmingCanBeRequiredForHardwareFlight)
+{
+  MissionConfig config{};
+  config.allow_mission_start = true;
+  config.allow_arming_command = false;
+  config.warmup_duration_s = 0.0;
+  MissionController mission{config};
+  auto telemetry = valid_telemetry();
+
+  ASSERT_TRUE(mission.start(0.0));
+  mission.update(0.0, telemetry);
+  auto output = mission.update(0.1, telemetry);
+  ASSERT_EQ(mission.state(), MissionState::WaitForOffboard);
+  EXPECT_TRUE(output.request_offboard);
+
+  telemetry.offboard = true;
+  output = mission.update(0.2, telemetry);
+  ASSERT_EQ(mission.state(), MissionState::WaitForArm);
+  EXPECT_FALSE(output.request_arm);
+
+  telemetry.armed = true;
+  telemetry.landed = false;
+  output = mission.update(0.3, telemetry);
+  EXPECT_EQ(mission.state(), MissionState::Takeoff);
+  EXPECT_TRUE(output.publish_setpoint);
+}
+
 TEST(MissionController, CompletesNominalMissionInNed)
 {
   MissionConfig config{};
+  config.allow_mission_start = true;
   config.allow_arming_command = true;
   config.warmup_duration_s = 1.0;
   config.hover_duration_s = 5.0;
@@ -85,6 +113,7 @@ TEST(MissionController, CompletesNominalMissionInNed)
 TEST(MissionController, ForwardUsesCapturedHeading)
 {
   MissionConfig config{};
+  config.allow_mission_start = true;
   config.allow_arming_command = true;
   config.warmup_duration_s = 0.0;
   config.hover_duration_s = 0.0;
@@ -115,6 +144,7 @@ TEST(MissionController, ForwardUsesCapturedHeading)
 TEST(MissionController, StalePositionWhileArmedRequestsLanding)
 {
   MissionConfig config{};
+  config.allow_mission_start = true;
   config.allow_arming_command = true;
   config.warmup_duration_s = 0.0;
   MissionController mission{config};
@@ -138,6 +168,7 @@ TEST(MissionController, StalePositionWhileArmedRequestsLanding)
 TEST(MissionController, GeofenceViolationWhileArmedRequestsLanding)
 {
   MissionConfig config{};
+  config.allow_mission_start = true;
   config.allow_arming_command = true;
   config.warmup_duration_s = 0.0;
   MissionController mission{config};
@@ -161,6 +192,7 @@ TEST(MissionController, GeofenceViolationWhileArmedRequestsLanding)
 TEST(MissionController, AbortBeforeArmingNeverRequestsLand)
 {
   MissionConfig config{};
+  config.allow_mission_start = true;
   config.allow_arming_command = true;
   MissionController mission{config};
   auto telemetry = valid_telemetry();
@@ -172,4 +204,3 @@ TEST(MissionController, AbortBeforeArmingNeverRequestsLand)
   EXPECT_FALSE(output.request_land);
 }
 }  // namespace
-

@@ -1,6 +1,7 @@
 offboard_mission:
   ros__parameters:
     auto_start: false
+    allow_mission_start: false
     allow_arming_command: false
     takeoff_altitude_m: 1.0
     forward_distance_m: 1.0

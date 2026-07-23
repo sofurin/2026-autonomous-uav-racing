@@ -24,6 +24,7 @@ enum class MissionState
 
 struct MissionConfig
 {
+  bool allow_mission_start{false};
   bool allow_arming_command{false};
   double takeoff_altitude_m{1.0};
   double forward_distance_m{1.0};
@@ -96,4 +97,3 @@ private:
 };
 
 }  // namespace racing_px4_control
-

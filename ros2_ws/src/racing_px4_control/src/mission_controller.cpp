@@ -14,7 +14,7 @@ MissionController::MissionController(MissionConfig config)
 
 bool MissionController::start(const double now_s)
 {
-  if (!config_.allow_arming_command ||
+  if (!config_.allow_mission_start ||
     (state_ != MissionState::Standby && state_ != MissionState::Complete &&
     state_ != MissionState::Aborted))
   {
@@ -245,7 +245,8 @@ MissionOutput MissionController::output_for_state() const
   }
 
   output.request_offboard = state_ == MissionState::WaitForOffboard;
-  output.request_arm = state_ == MissionState::WaitForArm;
+  output.request_arm =
+    state_ == MissionState::WaitForArm && config_.allow_arming_command;
   return output;
 }
 
@@ -258,4 +259,3 @@ MissionOutput MissionController::fail(
 }
 
 }  // namespace racing_px4_control
-

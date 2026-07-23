@@ -27,6 +27,7 @@ public:
   : Node("offboard_mission")
   {
     MissionConfig config{};
+    config.allow_mission_start = declare_parameter("allow_mission_start", false);
     config.allow_arming_command = declare_parameter("allow_arming_command", false);
     config.takeoff_altitude_m = declare_parameter("takeoff_altitude_m", 1.0);
     config.forward_distance_m = declare_parameter("forward_distance_m", 1.0);
@@ -91,7 +92,7 @@ public:
         response->success = mission_->start(seconds_now());
         response->message = response->success ?
           "Offboard mission started; waiting for valid PX4 local position" :
-          "Mission start rejected (arming disabled or mission already active)";
+          "Mission start rejected (mission start disabled or mission already active)";
         publish_state(true);
       });
     abort_service_ = create_service<std_srvs::srv::Trigger>(
@@ -112,8 +113,11 @@ public:
 
     RCLCPP_WARN(
       get_logger(),
-      "PX4 Offboard can move and arm a vehicle. allow_arming_command=%s auto_start=%s",
-      config.allow_arming_command ? "true" : "false", auto_start_ ? "true" : "false");
+      "PX4 Offboard can move a vehicle. allow_mission_start=%s "
+      "allow_arming_command=%s auto_start=%s",
+      config.allow_mission_start ? "true" : "false",
+      config.allow_arming_command ? "true" : "false",
+      auto_start_ ? "true" : "false");
   }
 
 private:
@@ -132,7 +136,7 @@ private:
     if (auto_start_ && !auto_start_attempted_) {
       auto_start_attempted_ = true;
       if (!mission_->start(seconds_now())) {
-        RCLCPP_ERROR(get_logger(), "auto_start was rejected; check allow_arming_command");
+        RCLCPP_ERROR(get_logger(), "auto_start was rejected; check allow_mission_start");
       }
     }
 
